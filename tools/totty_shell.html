@@ -287,7 +287,10 @@
   .bk-send{display:flex;gap:8px;margin-top:4px}
   .bk-send button{flex:1;padding:13px 10px;border-radius:10px;border:0;background:var(--g);color:#1a1405;font:inherit;font-weight:700;cursor:pointer;min-height:48px}
   .bk-send button.alt{background:transparent;border:1.5px solid var(--g);color:var(--gs)}
-  .bk-fine{font-size:.8rem;color:#9aa6bd}
+  .bk-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .bk-alt{font-size:.85rem;color:#9aa6bd;text-align:center}
+  .bk-alt button{background:none;border:0;color:var(--gs);font:inherit;text-decoration:underline;cursor:pointer;padding:6px 2px}
+  .bk-err{font-size:.88rem;color:#ffb4a8;background:rgba(255,120,100,.1);border:1px solid rgba(255,120,100,.35);border-radius:10px;padding:10px 12px}
   .bk-done{margin-top:18px;padding:16px;border-radius:12px;border:1px solid rgba(214,175,92,.5);background:rgba(214,175,92,.1)}
   .bk-done-title{font-family:Caveat,cursive;font-size:2rem;color:var(--g);line-height:1}
   @media (max-width:640px){
@@ -460,10 +463,12 @@
         <input name="phone" required type="tel" placeholder="Phone" autocomplete="tel">
         <input name="email" type="email" placeholder="Email (optional)" autocomplete="email">
         <textarea name="note" rows="2" placeholder="Anything I should know? (optional)"></textarea>
-        <div class="bk-send"><button type="submit" data-via="sms">Book by text</button><button type="submit" data-via="email" class="alt">Book by email</button></div>
-        <p class="bk-fine">This sends your request to Yossi, who will confirm your slot.</p>
+        <input name="website" class="bk-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="bk-send"><button type="submit" data-via="api">Book my slot</button></div>
+        <p class="bk-alt">or send by <button type="submit" data-via="sms">text</button> · <button type="submit" data-via="email">email</button></p>
+        <p class="bk-err" role="alert" hidden></p>
       </form>
-      <div class="bk-done" hidden><p class="bk-done-title">Almost there!</p><p>Press <b>send</b> in the message that just opened. Yossi will confirm your slot. Chanukah sameach!</p></div>
+      <div class="bk-done" hidden><p class="bk-done-title">You're booked in!</p><p class="bk-done-msg"></p></div>
     </div>
   </div>
 </dialog>
@@ -619,7 +624,7 @@
     var grid = dlg.querySelector('.bk-grid'), month = dlg.querySelector('.bk-month'), info = dlg.querySelector('.bk-dayinfo');
     var times = dlg.querySelector('.bk-times'), form = dlg.querySelector('.bk-form'), done = dlg.querySelector('.bk-done');
     var prev = dlg.querySelector('[data-bk="prev"]'), next = dlg.querySelector('[data-bk="next"]');
-    var sel = null, slot = null, via = 'sms';
+    var sel = null, slot = null, via = 'api';
     function key(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     function today(){ var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
     function open(d){ return d.getDay() <= 4 && d >= START && d <= END && d >= today(); }
@@ -658,15 +663,28 @@
     prev.onclick = function(){ view = new Date(view.getFullYear(), view.getMonth()-1, 1); render(); };
     next.onclick = function(){ view = new Date(view.getFullYear(), view.getMonth()+1, 1); render(); };
     form.querySelectorAll('[data-via]').forEach(function(b){ b.addEventListener('click', function(){ via = b.getAttribute('data-via'); }); });
+    var err = form.querySelector('.bk-err'), doneMsg = done.querySelector('.bk-done-msg'), mainBtn = form.querySelector('[data-via="api"]');
+    function finish(html){ form.hidden = true; done.hidden = false; doneMsg.innerHTML = html; done.scrollIntoView({behavior:'smooth', block:'nearest'}); }
     form.addEventListener('submit', function(e){
       e.preventDefault(); if (!sel || !slot) return;
-      var f = form.elements, sp = SP[key(sel)];
-      var msg = "Hi Yossi! I'd like to book a 1-hour session on " + nice(sel) + ', ' + slot + ' (New York time)' + (sp ? ' [' + sp.names.join(', ') + ']' : '') + '.\n\n' +
+      var f = form.elements, sp = SP[key(sel)], label = sp ? sp.names.join(', ') : '';
+      var msg = "Hi Yossi! I'd like to book a 1-hour session on " + nice(sel) + ', ' + slot + ' (New York time)' + (label ? ' [' + label + ']' : '') + '.\n\n' +
         'Name: ' + f.name.value + '\nPhone: ' + f.phone.value + (f.email.value ? '\nEmail: ' + f.email.value : '') + (f.note.value ? '\nNote: ' + f.note.value : '') +
         '\n\n(Booking first; we\'ll talk payment afterwards.)';
-      location.href = via === 'sms' ? 'sms:+16462610550?&body=' + encodeURIComponent(msg)
-        : 'mailto:yossifederman@gmail.com?subject=' + encodeURIComponent('Session booking: ' + nice(sel) + ', ' + slot) + '&body=' + encodeURIComponent(msg);
-      done.hidden = false; done.scrollIntoView({behavior:'smooth', block:'nearest'});
+      var when = '<b>' + nice(sel) + ', ' + slot + '</b>';
+      function viaApp(how){
+        location.href = how === 'sms' ? 'sms:+16462610550?&body=' + encodeURIComponent(msg)
+          : 'mailto:yossifederman@gmail.com?subject=' + encodeURIComponent('Session booking: ' + nice(sel) + ', ' + slot) + '&body=' + encodeURIComponent(msg);
+        finish('Press <b>send</b> in the message that just opened to request ' + when + '. Yossi will confirm your slot. Chanukah sameach!');
+      }
+      if (via !== 'api') return viaApp(via);
+      err.hidden = true; mainBtn.disabled = true; mainBtn.textContent = 'Booking…';
+      fetch('/api/book', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({name:f.name.value, phone:f.phone.value, email:f.email.value, note:f.note.value, website:f.website.value, date:key(sel), dayText:nice(sel), slot:slot, label:label})})
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || !j.ok) throw new Error(j.error || r.status); }); })
+        .then(function(){ finish('Your request for ' + when + ' is on its way to Yossi. He\'ll reach out to confirm. Chanukah sameach!'); })
+        .catch(function(){ err.hidden = false; err.innerHTML = "Couldn't send it online. Please book by <b>text</b> or <b>email</b> instead (just below)."; })
+        .then(function(){ mainBtn.disabled = false; mainBtn.textContent = 'Book my slot'; });
     });
     function show(){ render(); if (!dlg.open) dlg.showModal(); document.documentElement.style.overflow = 'hidden'; }
     dlg.addEventListener('close', function(){ document.documentElement.style.overflow = ''; if (location.hash === '#book') history.replaceState(null, '', location.pathname); });
