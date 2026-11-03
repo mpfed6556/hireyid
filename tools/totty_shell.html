@@ -337,7 +337,7 @@
     var zoom = document.createElement('div'); zoom.className = 'body-zoom'; while (pic.firstChild) zoom.appendChild(pic.firstChild); pic.appendChild(zoom); pic.appendChild(hint);
     function go(k){
       items[i].classList.remove('on'); i = (k + n) % n; var it = items[i]; it.classList.add('on');
-      var r = +it.dataset.r, z = r < 10 ? Math.min(2.6, 13 / r) : 1;
+      var r = +it.dataset.r, z = r >= 30 ? 1 : Math.min(2.6, Math.max(1.4, 16 / r));
       // Centre the circled spot in the frame, without showing empty edges.
       var cl = function(v){ return Math.max(100 - 100 * z, Math.min(0, v)); };
       zoom.style.setProperty('--z', z);
