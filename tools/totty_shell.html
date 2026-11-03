@@ -126,6 +126,7 @@
   .slide-head .tag{display:block;font-family:Inter,sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
   .slide-img{display:flex;justify-content:center;padding:0 12px 14px}
   .slide-img img{max-width:100%;max-height:calc(min(78vh,720px) - 120px);object-fit:contain;border-radius:12px;display:block}
+  .ss-progress{margin:12px auto 0;max-width:420px}
   .ss-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
   .ss-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--gold-soft);font-size:1.6rem;line-height:1;cursor:pointer;display:grid;place-items:center}
   .ss-btn:hover{background:var(--gold);color:#1a1405}
@@ -310,7 +311,9 @@
   function slideshow(root){
     var slides = root.querySelectorAll('.slide'), n = slides.length, i = 0, timer = null;
     var count = root.querySelector('.ss-count'), play = root.querySelector('.ss-play');
-    function go(k){ slides[i].classList.remove('on'); i = (k + n) % n; slides[i].classList.add('on'); count.textContent = (i+1) + ' / ' + n; }
+    var track = document.createElement('div'); track.className = 'st-progress ss-progress'; var bar = document.createElement('span'); track.appendChild(bar);
+    root.insertBefore(track, root.querySelector('.ss-controls'));
+    function go(k){ slides[i].classList.remove('on'); i = (k + n) % n; slides[i].classList.add('on'); count.textContent = (i+1) + ' / ' + n; bar.style.width = ((i+1) / n * 100) + '%'; }
     function stop(){ clearInterval(timer); timer = null; play.textContent = '▶'; play.setAttribute('aria-label','Play slideshow'); }
     function start(){ stop(); timer = setInterval(function(){ go(i+1); }, 5000); play.textContent = '❚❚'; play.setAttribute('aria-label','Pause slideshow'); }
     root.querySelector('[data-ss="prev"]').onclick = function(){ stop(); go(i-1); };
