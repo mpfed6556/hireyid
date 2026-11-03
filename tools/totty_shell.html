@@ -200,7 +200,7 @@
   .body-pic{position:relative;width:min(380px,40vw);line-height:0;overflow:hidden;border-radius:18px;border:1px solid var(--line);flex:none}
   .body-zoom{position:relative;--z:1;transform-origin:0 0;transition:transform .7s ease}
   .body-pic img{width:100%;height:auto;display:block}
-  .ring{position:absolute;left:43%;top:66%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border:calc(4px / var(--z)) solid var(--gold);border-radius:50%;box-shadow:0 0 0 4px rgba(255,255,255,.7),0 0 26px 6px rgba(176,138,62,.75);transition:left .7s ease,top .7s ease,width .7s ease;pointer-events:none;animation:pulse 1.8s ease-in-out infinite}
+  .ring{position:absolute;left:43%;top:66%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border:calc(4px / var(--z)) solid var(--gold);border-radius:50%;box-shadow:0 0 0 4px rgba(255,255,255,.7),0 0 26px 6px rgba(176,138,62,.75);transition:left .7s ease,top .7s ease,width .7s ease,opacity .5s ease;pointer-events:none;animation:pulse 1.8s ease-in-out infinite}
   @keyframes pulse{50%{box-shadow:0 0 0 4px rgba(255,255,255,.7),0 0 40px 12px rgba(176,138,62,.9)}}
   .struggle-panel{background:var(--panel);box-shadow:var(--shadow);border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 20px;min-height:300px;display:flex;flex-direction:column}
   .struggle-list{list-style:none;flex:1}
@@ -577,7 +577,8 @@
     var zoom = document.createElement('div'); zoom.className = 'body-zoom'; while (pic.firstChild) zoom.appendChild(pic.firstChild); pic.appendChild(zoom); pic.appendChild(hint);
     function go(k){
       items[i].classList.remove('on'); i = (k + n) % n; var it = items[i]; it.classList.add('on');
-      var r = +it.dataset.r, z = r >= 30 ? 1 : Math.min(2.6, Math.max(1.4, 16 / r));
+      var r = +it.dataset.r, z = !r || r >= 30 ? 1 : Math.min(2.6, Math.max(1.4, 16 / r));
+      ring.style.opacity = r ? 1 : 0;
       // Centre the circled spot in the frame, without showing empty edges.
       var cl = function(v){ return Math.max(100 - 100 * z, Math.min(0, v)); };
       zoom.style.setProperty('--z', z);
