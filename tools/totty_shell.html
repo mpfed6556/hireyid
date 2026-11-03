@@ -242,83 +242,34 @@
   }
 
   /* ---------- Booking (Chanukah) ---------- */
-  .btn-gold{background:#b08a3e;color:#fff}
-  .btn-gold:hover{background:#8a6a26}
-  #booking{--g:#d6af5c;--gs:#ecd49a;padding:0;border:0;border-radius:20px;width:min(820px,calc(100vw - 32px));max-width:none;max-height:calc(100svh - 32px);background:#0a1530;color:#f4efe4;box-shadow:0 30px 90px rgba(0,0,0,.5);overflow:hidden}
-  #booking[open]{display:flex;flex-direction:column}
-  #booking::backdrop{background:rgba(6,12,28,.72);backdrop-filter:blur(4px)}
-  .bk-head{position:relative;text-align:center;padding:20px 24px 16px;background:radial-gradient(ellipse at 50% 10%,rgba(255,194,74,.28),transparent 65%),linear-gradient(180deg,#152a55,#0a1530);flex:none}
-  .bk-menorah{width:170px;height:auto;display:block;margin:0 auto 4px;filter:drop-shadow(0 0 18px rgba(255,194,74,.35))}
+  #booking{--g:#d6af5c;--gs:#ecd49a;margin:auto;padding:22px 22px 18px;border:0;border-radius:20px;width:min(400px,calc(100vw - 24px));max-height:calc(100svh - 24px);overflow-y:auto;text-align:center;color:#f4efe4;
+    background:radial-gradient(ellipse at 50% 0%,rgba(255,194,74,.26),transparent 60%),linear-gradient(180deg,#152a55,#0a1530 55%);box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  #booking::backdrop{background:rgba(6,12,28,.72);backdrop-filter:blur(3px)}
+  .bk-menorah{width:120px;height:auto;display:block;margin:0 auto 2px;filter:drop-shadow(0 0 16px rgba(255,194,74,.35))}
   .bk-flames path{transform-box:fill-box;transform-origin:50% 100%;animation:bkFlick 1.6s ease-in-out infinite}
   @keyframes bkFlick{0%,100%{transform:scale(1,1)}30%{transform:scale(.92,1.08) rotate(-3deg)}60%{transform:scale(1.05,.95) rotate(2deg)}}
   @media (prefers-reduced-motion:reduce){.bk-flames path{animation:none}}
-  .bk-title{font-family:Caveat,cursive;font-weight:700;font-size:3rem;color:var(--g);line-height:1}
-  .bk-sub{font-family:"Source Serif 4",serif;font-size:1.15rem;margin-top:4px;color:#e9edf4}
-  .bk-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
-  .bk-chips span{font-size:.78rem;border:1px solid rgba(214,175,92,.45);border-radius:999px;padding:4px 10px;color:var(--gs)}
-  .bk-close{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer}
-  .bk-body{overflow-y:auto;padding:18px 24px 24px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;-webkit-overflow-scrolling:touch}
-  .bk-step h3{font-family:Inter,sans-serif;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g);margin-bottom:10px}
-  .bk-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .bk-cal-head strong{font-family:"Source Serif 4",serif;font-size:1.15rem}
-  .bk-nav{width:38px;height:38px;border-radius:10px;border:1px solid rgba(214,175,92,.4);background:transparent;color:var(--gs);font-size:1.3rem;cursor:pointer}
-  .bk-nav:disabled{opacity:.25;cursor:default}
-  .bk-dow,.bk-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-  .bk-dow{margin-bottom:4px}
-  .bk-dow span{text-align:center;font-size:.72rem;color:#9aa6bd;font-weight:600}
-  .bk-day{position:relative;aspect-ratio:1;border-radius:10px;border:1px solid rgba(214,175,92,.4);background:rgba(255,255,255,.05);color:#fff;font:inherit;font-size:.92rem;cursor:pointer;padding:0}
-  .bk-day:hover:not(:disabled){background:rgba(214,175,92,.2)}
-  .bk-day.off{border-color:transparent;background:transparent;color:#55617b;cursor:default}
-  .bk-day.chan:not(.off){background:rgba(255,194,74,.14);border-color:#ffc24a;box-shadow:0 0 10px rgba(255,194,74,.3)}
-  .bk-day.sel{background:var(--g)!important;color:#1a1405;border-color:var(--g);font-weight:700}
-  .bk-marks{position:absolute;left:0;right:0;bottom:1px;font-size:.6rem;line-height:1;text-align:center;white-space:nowrap}
-  .bk-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px;font-size:.78rem;color:#c3cad8}
-  .lg{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-  .lg-ok{border:1px solid var(--g);background:rgba(255,255,255,.05)}
-  .bk-dayinfo{color:#d7dce6;margin-bottom:10px;min-height:1.5em}
-  .bk-dayinfo .tag{display:inline-block;margin-left:6px;font-size:.78rem;color:#1a1405;background:var(--gs);border-radius:999px;padding:2px 9px;vertical-align:1px}
-  .bk-times{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .bk-times button{padding:12px 8px;border-radius:10px;border:1px solid rgba(214,175,92,.5);background:transparent;color:#f4efe4;font:inherit;font-size:.92rem;cursor:pointer;min-height:46px}
-  .bk-times button:hover{background:rgba(214,175,92,.15)}
-  .bk-times button.sel{background:var(--g);color:#1a1405;font-weight:700}
-  .bk-form{display:grid;gap:8px;margin-top:18px}
-  .bk-form input,.bk-form textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(214,175,92,.45);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:1rem;resize:vertical}
-  .bk-form input::placeholder,.bk-form textarea::placeholder{color:#97a2b8}
-  .bk-form input:focus,.bk-form textarea:focus{outline:none;border-color:var(--g)}
-  .bk-send{display:flex;gap:8px;margin-top:4px}
-  .bk-send button{flex:1;padding:13px 10px;border-radius:10px;border:0;background:var(--g);color:#1a1405;font:inherit;font-weight:700;cursor:pointer;min-height:48px}
-  .bk-send button.alt{background:transparent;border:1.5px solid var(--g);color:var(--gs)}
+  .bk-title{font-family:Caveat,cursive;font-weight:700;font-size:2.6rem;color:var(--g);line-height:1}
+  .bk-sub{font-family:"Source Serif 4",serif;font-size:1rem;color:#dfe4ee;margin:4px 0 16px}
+  .bk-close{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#fff;font-size:1.4rem;line-height:1;cursor:pointer}
+  .bk-form{display:grid;gap:10px;text-align:left}
+  .bk-form label{display:grid;gap:4px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g)}
+  .bk-form select,.bk-form input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(214,175,92,.45);background:#0f1e40;color:#fff;font:inherit;font-size:1rem;letter-spacing:0;text-transform:none;font-weight:400;min-height:50px}
+  .bk-form select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,#d6af5c 50%),linear-gradient(135deg,#d6af5c 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+  .bk-form input::placeholder{color:#97a2b8}
+  .bk-form select:focus,.bk-form input:focus{outline:none;border-color:var(--g)}
+  .bk-go{margin-top:4px;padding:15px;border:0;border-radius:12px;background:var(--g);color:#1a1405;font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;min-height:52px}
+  .bk-go:hover{background:var(--gs)}
+  .bk-go:disabled{opacity:.6;cursor:wait}
+  .bk-note{text-align:center;font-size:.82rem;color:#aab3c5}
   .bk-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-  .bk-alt{font-size:.85rem;color:#9aa6bd;text-align:center}
-  .bk-alt button{background:none;border:0;color:var(--gs);font:inherit;text-decoration:underline;cursor:pointer;padding:6px 2px}
-  .bk-err{font-size:.88rem;color:#ffb4a8;background:rgba(255,120,100,.1);border:1px solid rgba(255,120,100,.35);border-radius:10px;padding:10px 12px}
-  .bk-done{margin-top:18px;padding:16px;border-radius:12px;border:1px solid rgba(214,175,92,.5);background:rgba(214,175,92,.1)}
-  .bk-done-title{font-family:Caveat,cursive;font-size:2rem;color:var(--g);line-height:1}
-  @media (max-width:640px){
-    #booking{width:100vw;max-height:100svh;height:100svh;border-radius:0}
-    .bk-head{padding:14px 16px 12px}
-    .bk-menorah{width:120px}
-    .bk-title{font-size:2.3rem}
-    .bk-sub{font-size:1rem}
-    .bk-chips span{font-size:.72rem;padding:3px 8px}
-    .bk-body{grid-template-columns:1fr;padding:14px 16px 28px;gap:18px}
-  }
-
-  /* ---------- Sneak-peek locks ---------- */
-  .lock-panel{--g:#d6af5c;--gs:#ecd49a;position:relative;overflow:hidden;margin-top:18px;border-radius:20px;padding:34px clamp(20px,5vw,48px);color:#f4efe4;text-align:center;
-    background:radial-gradient(ellipse at 50% 0%,rgba(214,175,92,.25),transparent 65%),linear-gradient(160deg,#16295a,#0a1530 70%);box-shadow:0 24px 60px rgba(16,32,63,.25)}
-  .lock-panel .gate-kicker{margin:0;padding:0;border:0}
-  .lock-title{font-family:Caveat,cursive;font-weight:700;color:var(--g);font-size:clamp(2.6rem,6vw,3.6rem);line-height:1;margin-top:6px}
-  .lock-panel .gate-msg{max-width:46ch;margin:10px auto 0}
-  .lock-panel .gate-form{max-width:440px;margin:20px auto 0}
-  .lock-panel #gateErr{min-height:1.3em}
-  .lock-what{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:14px}
-  .lock-what span{font-size:.82rem;border:1px solid rgba(214,175,92,.45);border-radius:999px;padding:4px 12px;color:var(--gs)}
-  .lock-mini{margin-top:14px;display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:16px;background:var(--panel);border:1px dashed rgba(176,138,62,.6);box-shadow:var(--shadow)}
-  .lock-mini .ico{font-size:1.6rem}
-  .lock-mini p{flex:1;color:var(--muted)}
-  .lock-mini button{border:0;background:var(--navy);color:#fff;font:inherit;font-weight:600;padding:11px 18px;border-radius:10px;cursor:pointer;min-height:44px}
-  @media (max-width:600px){.lock-mini{flex-wrap:wrap}.lock-mini button{width:100%}.lock-panel .gate-form button{padding:14px 16px}}
+  .bk-err{font-size:.88rem;color:#ffb4a8;text-align:center}
+  .bk-err a{color:var(--gs)}
+  .bk-done{padding:8px 4px 4px}
+  .bk-done-title{font-family:Caveat,cursive;font-size:2.2rem;color:var(--g);line-height:1}
+  .bk-done-msg{margin-top:6px;color:#e3e7ef}
+  .btn-gold{background:#b08a3e;color:#fff}
+  .btn-gold:hover{background:#8a6a26}
 
   /* ---------- Hacks ---------- */
   .hacks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:28px}
@@ -429,9 +380,8 @@
 <body>
 <div id="app">{{PUBLIC}}</div>
 <dialog id="booking" aria-labelledby="bkTitle">
-  <div class="bk-head">
-    <button type="button" class="bk-close" aria-label="Close">×</button>
-    <svg class="bk-menorah" viewBox="0 0 220 130" aria-hidden="true">
+  <button type="button" class="bk-close" aria-label="Close">×</button>
+  <svg class="bk-menorah" viewBox="0 0 220 130" aria-hidden="true">
       <defs><linearGradient id="bkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3dc9c"/><stop offset="1" stop-color="#b08a3e"/></linearGradient>
       <radialGradient id="bkF" cx=".5" cy=".7" r=".6"><stop offset="0" stop-color="#fff6d0"/><stop offset=".5" stop-color="#ffc24a"/><stop offset="1" stop-color="#ff7a1a"/></radialGradient></defs>
       <path d="M84 126h52l-10-12h-32z" fill="url(#bkG)"/><rect x="106" y="62" width="8" height="54" rx="2" fill="url(#bkG)"/>
@@ -439,36 +389,21 @@
       <g fill="#f4efe4"><rect x="12.5" y="30" width="7" height="30" rx="1.5"/><rect x="36.5" y="30" width="7" height="30" rx="1.5"/><rect x="60.5" y="30" width="7" height="30" rx="1.5"/><rect x="84.5" y="30" width="7" height="30" rx="1.5"/><rect x="106.5" y="14" width="7" height="46" rx="1.5"/><rect x="128.5" y="30" width="7" height="30" rx="1.5"/><rect x="152.5" y="30" width="7" height="30" rx="1.5"/><rect x="176.5" y="30" width="7" height="30" rx="1.5"/><rect x="200.5" y="30" width="7" height="30" rx="1.5"/></g>
       <g class="bk-flames"><path style="animation-delay:0.00s" d="M16 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.13s" d="M40 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.26s" d="M64 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.39s" d="M88 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.52s" d="M110 -3 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.65s" d="M132 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.78s" d="M156 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:0.91s" d="M180 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/><path style="animation-delay:1.04s" d="M204 13 c6 7 6 13 0 15 c-6-2-6-8 0-15z" fill="url(#bkF)"/></g>
     </svg>
-    <h2 class="bk-title" id="bkTitle">Book your slot</h2>
-    <p class="bk-sub">Allow me to inspire you to be grateful this Chanukah, and always.</p>
-    <div class="bk-chips"><span>1-hour session</span><span>Sun–Thu · 10 AM–2 PM</span><span>Book first, we'll talk payment after</span></div>
-  </div>
-  <div class="bk-body">
-    <div class="bk-step">
-      <h3>1 · Pick a day</h3>
-      <div class="bk-cal-head"><button type="button" class="bk-nav" data-bk="prev" aria-label="Previous month">‹</button><strong class="bk-month"></strong><button type="button" class="bk-nav" data-bk="next" aria-label="Next month">›</button></div>
-      <div class="bk-dow"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
-      <div class="bk-grid"></div>
-      <div class="bk-legend"><span><b class="lg lg-ok"></b>Open</span><span>🕎 Chanukah</span><span>☾ Rosh Chodesh</span><span>◆ Fast day</span><span>🎭 Purim</span></div>
-    </div>
-    <div class="bk-step bk-right">
-      <h3>2 · Pick a time</h3>
-      <p class="bk-dayinfo">Choose a day on the calendar.</p>
-      <div class="bk-times"></div>
-      <form class="bk-form" hidden>
-        <h3>3 · Your details</h3>
-        <input name="name" required placeholder="Your name" autocomplete="name">
-        <input name="phone" required type="tel" placeholder="Phone" autocomplete="tel">
-        <input name="email" type="email" placeholder="Email (optional)" autocomplete="email">
-        <textarea name="note" rows="2" placeholder="Anything I should know? (optional)"></textarea>
-        <input name="website" class="bk-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <div class="bk-send"><button type="submit" data-via="api">Book my slot</button></div>
-        <p class="bk-alt">or send by <button type="submit" data-via="sms">text</button> · <button type="submit" data-via="email">email</button></p>
-        <p class="bk-err" role="alert" hidden></p>
-      </form>
-      <div class="bk-done" hidden><p class="bk-done-title">You're booked in!</p><p class="bk-done-msg"></p></div>
-    </div>
-  </div>
+  <h2 class="bk-title" id="bkTitle">Book your slot</h2>
+  <p class="bk-sub">Let me inspire you to be grateful this Chanukah, and always.</p>
+  <form class="bk-form">
+    <label>Day<select name="day" required></select></label>
+    <label>Time<select name="slot" required>
+      <option>10:00 – 11:00 AM</option><option>11:00 AM – 12:00 PM</option><option>12:00 – 1:00 PM</option><option>1:00 – 2:00 PM</option>
+    </select></label>
+    <input name="name" required placeholder="Your name" autocomplete="name">
+    <input name="phone" required type="tel" placeholder="Your phone" autocomplete="tel">
+    <input name="website" class="bk-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit" class="bk-go">Book my slot</button>
+    <p class="bk-note">1-hour session · Book now, we'll talk payment later</p>
+    <p class="bk-err" role="alert" hidden></p>
+  </form>
+  <div class="bk-done" hidden><p class="bk-done-title">You're booked in!</p><p class="bk-done-msg"></p></div>
 </dialog>
 
 
@@ -609,85 +544,49 @@
   // ---------- Booking pop-up ----------
   (function(){
     var dlg = document.getElementById('booking'); if (!dlg || !dlg.showModal) return;
-    var START = new Date(2026,10,15), END = new Date(2027,2,22), LASTM = 2027*12+2;
-    var SP = {}, add = function(k, t, name){ var o = SP[k] = SP[k] || {t:[], names:[]}; o.t.push(t); o.names.push(name); };
-    for (var c = 0; c < 8; c++) { var cd = new Date(2026,11,5+c); add(key(cd), 'chan', 'Chanukah · day ' + (c+1)); }
-    [['2026-12-10','Teves'],['2026-12-11','Teves'],['2027-01-09','Shvat'],['2027-02-07','Adar I'],['2027-02-08','Adar I'],['2027-03-09','Adar II'],['2027-03-10','Adar II']].forEach(function(r){ add(r[0], 'rc', 'Rosh Chodesh ' + r[1]); });
-    add('2026-12-20','fast',"Asara B'Teves"); add('2027-03-22','fast',"Ta'anis Esther");
-    add('2027-02-21','purim','Purim Katan'); add('2027-03-23','purim','Purim');
-    var ICON = {chan:'🕎', rc:'☾', fast:'◆', purim:'🎭'};
-    var TIMES = [['10:00 – 11:00 AM'],['11:00 AM – 12:00 PM'],['12:00 – 1:00 PM'],['1:00 – 2:00 PM']];
-    var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var grid = dlg.querySelector('.bk-grid'), month = dlg.querySelector('.bk-month'), info = dlg.querySelector('.bk-dayinfo');
-    var times = dlg.querySelector('.bk-times'), form = dlg.querySelector('.bk-form'), done = dlg.querySelector('.bk-done');
-    var prev = dlg.querySelector('[data-bk="prev"]'), next = dlg.querySelector('[data-bk="next"]');
-    var sel = null, slot = null, via = 'api';
+    var START = new Date(2026,10,15), END = new Date(2027,2,22);
+    var SP = {}, add = function(k, name){ (SP[k] = SP[k] || []).push(name); };
+    for (var c = 0; c < 8; c++) add(key(new Date(2026,11,5+c)), '🕎 Chanukah day ' + (c+1));
+    [['2026-12-10','Teves'],['2026-12-11','Teves'],['2027-01-09','Shvat'],['2027-02-07','Adar I'],['2027-02-08','Adar I'],['2027-03-09','Adar II'],['2027-03-10','Adar II']].forEach(function(r){ add(r[0], '☾ Rosh Chodesh ' + r[1]); });
+    add('2026-12-20',"Asara B'Teves"); add('2027-03-22',"Ta'anis Esther"); add('2027-02-21','Purim Katan');
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var DAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     function key(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
-    function today(){ var t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
-    function open(d){ return d.getDay() <= 4 && d >= START && d <= END && d >= today(); }
     function nice(d){ return DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
-    var first = today() > START ? today() : START, view = new Date(first.getFullYear(), first.getMonth(), 1);
-    function render(){
-      var y = view.getFullYear(), m = view.getMonth(), mi = y*12+m;
-      month.textContent = MONTHS[m] + ' ' + y;
-      prev.disabled = mi <= first.getFullYear()*12 + first.getMonth(); next.disabled = mi >= LASTM;
-      grid.innerHTML = '';
-      for (var b = new Date(y,m,1).getDay(); b > 0; b--) grid.appendChild(document.createElement('span'));
-      for (var d = 1, n = new Date(y,m+1,0).getDate(); d <= n; d++) (function(dt){
-        var k = key(dt), sp = SP[k], btn = document.createElement('button'), ok = open(dt);
-        btn.type = 'button'; btn.className = 'bk-day';
-        btn.innerHTML = dt.getDate() + (sp ? '<span class="bk-marks">' + sp.t.map(function(t){ return ICON[t]; }).join('') + '</span>' : '');
-        if (sp) { btn.classList.add.apply(btn.classList, sp.t); btn.title = sp.names.join(' · '); }
-        if (!ok) { btn.disabled = true; btn.classList.add('off'); }
-        btn.setAttribute('aria-label', nice(dt) + (sp ? ', ' + sp.names.join(', ') : '') + (ok ? '' : ', not available'));
-        if (sel && key(sel) === k) btn.classList.add('sel');
-        btn.onclick = function(){ pick(dt); };
-        grid.appendChild(btn);
-      })(new Date(y,m,d));
-    }
-    function pick(dt){
-      sel = dt; slot = null; render(); form.hidden = true; done.hidden = true;
-      var sp = SP[key(dt)];
-      info.innerHTML = '<b>' + nice(dt) + '</b>' + (sp ? sp.names.map(function(x){ return '<span class="tag">' + x + '</span>'; }).join('') : '');
-      times.innerHTML = '';
-      TIMES.forEach(function(t){
-        var b = document.createElement('button'); b.type = 'button'; b.textContent = t[0];
-        b.onclick = function(){ slot = t[0]; [].forEach.call(times.children, function(x){ x.classList.toggle('sel', x === b); }); form.hidden = false; done.hidden = true; if (innerWidth <= 640) form.scrollIntoView({behavior:'smooth', block:'start'}); };
-        times.appendChild(b);
-      });
-      if (innerWidth <= 640) info.scrollIntoView({behavior:'smooth', block:'start'});
-    }
-    prev.onclick = function(){ view = new Date(view.getFullYear(), view.getMonth()-1, 1); render(); };
-    next.onclick = function(){ view = new Date(view.getFullYear(), view.getMonth()+1, 1); render(); };
-    form.querySelectorAll('[data-via]').forEach(function(b){ b.addEventListener('click', function(){ via = b.getAttribute('data-via'); }); });
-    var err = form.querySelector('.bk-err'), doneMsg = done.querySelector('.bk-done-msg'), mainBtn = form.querySelector('[data-via="api"]');
-    function finish(html){ form.hidden = true; done.hidden = false; doneMsg.innerHTML = html; done.scrollIntoView({behavior:'smooth', block:'nearest'}); }
-    form.addEventListener('submit', function(e){
-      e.preventDefault(); if (!sel || !slot) return;
-      var f = form.elements, sp = SP[key(sel)], label = sp ? sp.names.join(', ') : '';
-      var msg = "Hi Yossi! I'd like to book a 1-hour session on " + nice(sel) + ', ' + slot + ' (New York time)' + (label ? ' [' + label + ']' : '') + '.\n\n' +
-        'Name: ' + f.name.value + '\nPhone: ' + f.phone.value + (f.email.value ? '\nEmail: ' + f.email.value : '') + (f.note.value ? '\nNote: ' + f.note.value : '') +
-        '\n\n(Booking first; we\'ll talk payment afterwards.)';
-      var when = '<b>' + nice(sel) + ', ' + slot + '</b>';
-      function viaApp(how){
-        location.href = how === 'sms' ? 'sms:+16462610550?&body=' + encodeURIComponent(msg)
-          : 'mailto:yossifederman@gmail.com?subject=' + encodeURIComponent('Session booking: ' + nice(sel) + ', ' + slot) + '&body=' + encodeURIComponent(msg);
-        finish('Press <b>send</b> in the message that just opened to request ' + when + '. Yossi will confirm your slot. Chanukah sameach!');
+    var form = dlg.querySelector('.bk-form'), daySel = form.elements.day, done = dlg.querySelector('.bk-done'), doneMsg = dlg.querySelector('.bk-done-msg');
+    var err = form.querySelector('.bk-err'), go = form.querySelector('.bk-go'), dates = {};
+    (function fill(){
+      var t = new Date(), today = new Date(t.getFullYear(), t.getMonth(), t.getDate()), group = null, gm = -1;
+      for (var d = new Date(Math.max(START, today)); d <= END; d = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1)) {
+        if (d.getDay() > 4) continue;
+        if (d.getMonth() !== gm) { gm = d.getMonth(); group = document.createElement('optgroup'); group.label = MONTHS[gm] + ' ' + d.getFullYear(); daySel.appendChild(group); }
+        var k = key(d), o = document.createElement('option'); dates[k] = d;
+        o.value = k; o.textContent = DAY[d.getDay()] + ', ' + MON[d.getMonth()] + ' ' + d.getDate() + (SP[k] ? '  ·  ' + SP[k].join(' · ') : '');
+        group.appendChild(o);
       }
-      if (via !== 'api') return viaApp(via);
-      err.hidden = true; mainBtn.disabled = true; mainBtn.textContent = 'Booking…';
+    })();
+    function finish(html){ form.hidden = true; done.hidden = false; doneMsg.innerHTML = html; }
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var f = form.elements, d = dates[f.day.value], slot = f.slot.value, label = (SP[f.day.value] || []).join(', ').replace(/[🕎☾] /g, '');
+      if (!d) return;
+      var when = nice(d) + ', ' + slot;
+      var msg = "Hi Yossi! I'd like to book a 1-hour session on " + when + ' (New York time).\nName: ' + f.name.value + '\nPhone: ' + f.phone.value;
+      err.hidden = true; go.disabled = true; go.textContent = 'Booking…';
       fetch('/api/book', {method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({name:f.name.value, phone:f.phone.value, email:f.email.value, note:f.note.value, website:f.website.value, date:key(sel), dayText:nice(sel), slot:slot, label:label})})
-        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || !j.ok) throw new Error(j.error || r.status); }); })
-        .then(function(){ finish('Your request for ' + when + ' is on its way to Yossi. He\'ll reach out to confirm. Chanukah sameach!'); })
-        .catch(function(){ err.hidden = false; err.innerHTML = "Couldn't send it online. Please book by <b>text</b> or <b>email</b> instead (just below)."; })
-        .then(function(){ mainBtn.disabled = false; mainBtn.textContent = 'Book my slot'; });
+        body: JSON.stringify({name:f.name.value, phone:f.phone.value, website:f.website.value, date:f.day.value, dayText:nice(d), slot:slot, label:label})})
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok || !j.ok) throw 0; }); })
+        .then(function(){ finish('<b>' + when + '</b><br>Yossi will reach out to confirm. Chanukah sameach!'); })
+        .catch(function(){
+          err.hidden = false;
+          err.innerHTML = "Couldn't send it online. <a href=\"sms:+16462610550?&body=" + encodeURIComponent(msg) + "\">Text it to Yossi</a> or <a href=\"mailto:yossifederman@gmail.com?subject=" + encodeURIComponent('Session booking: ' + when) + '&body=' + encodeURIComponent(msg) + '">email it</a>.';
+        })
+        .then(function(){ go.disabled = false; go.textContent = 'Book my slot'; });
     });
-    function show(){ render(); if (!dlg.open) dlg.showModal(); document.documentElement.style.overflow = 'hidden'; }
+    function show(){ form.hidden = false; done.hidden = true; err.hidden = true; if (!dlg.open) dlg.showModal(); document.documentElement.style.overflow = 'hidden'; }
     dlg.addEventListener('close', function(){ document.documentElement.style.overflow = ''; if (location.hash === '#book') history.replaceState(null, '', location.pathname); });
     dlg.querySelector('.bk-close').onclick = function(){ dlg.close(); };
-    dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('click', function(e){ if (e.target !== dlg) return; var r = dlg.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close(); });
     document.addEventListener('click', function(e){ var t = e.target.closest && e.target.closest('[data-book]'); if (t) { e.preventDefault(); show(); } });
     window.openBooking = show;
     if (location.hash === '#book') show();
