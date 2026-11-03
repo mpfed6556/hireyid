@@ -239,17 +239,31 @@
     return new TextDecoder().decode(buf);
   }
 
+  // Folder the page lives in, with a trailing slash, so media resolves the
+  // same whether the page was opened as /totty, /totty/ or /totty/index.html.
+  function baseDir(){
+    var p = location.pathname.replace(/\/index\.html?$/i, '');
+    return p.charAt(p.length - 1) === '/' ? p : p + '/';
+  }
+
   async function loadMedia(name, el){
     var m = (P.media || {})[name], status = el.parentNode.querySelector('.media-status');
     if (!m) { if (status) status.textContent = 'Not available.'; return; }
+    var url = baseDir() + m.file;
+    if (m.plain) {
+      el.src = url;
+      if (status) status.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener">Not playing? Open it directly</a>';
+      return;
+    }
     try {
-      var res = await fetch(m.file);
+      var res = await fetch(url);
       if (!res.ok) throw new Error(res.status);
       var plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(m.iv)}, KEYOBJ, await res.arrayBuffer());
       el.src = URL.createObjectURL(new Blob([plain], {type:m.type}));
       if (status) status.remove();
     } catch(e) { if (status) status.textContent = 'Could not load. Check your connection and refresh.'; }
   }
+
 
   function slideshow(root){
     var slides = root.querySelectorAll('.slide'), n = slides.length, i = 0, timer = null;
