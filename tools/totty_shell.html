@@ -375,6 +375,70 @@
     .spoken.big{font-size:1.25em}
   }
 
+  /* ---------- One-screen stage (overrides) ---------- */
+  html,body{height:100%}
+  body{display:flex;flex-direction:column;min-height:100vh;min-height:100svh}
+  #app{flex:1;display:flex;flex-direction:column;min-height:0}
+  .topnav{padding:8px 24px;flex:none}
+  .topnav .nav-cta{margin-left:auto}
+  .stage{flex:1;min-height:0;display:flex;align-items:center;max-width:1180px;width:100%;margin:0 auto;padding:16px 24px}
+  .stage .struggles{display:grid;grid-template-columns:auto minmax(0,1fr);gap:36px;align-items:center;width:100%;height:100%;max-height:720px;margin:0}
+  .stage .body-pic{height:min(calc(100svh - 170px),640px);width:auto;aspect-ratio:900/1195;margin:0}
+  .stage-side{display:flex;flex-direction:column;gap:14px;min-height:0;height:100%;max-height:640px;justify-content:center}
+  .stage .name{margin-top:8px;font-size:clamp(2rem,3.6vw,3rem)}
+  .stage .headline{margin-top:4px;font-size:clamp(1.1rem,1.8vw,1.35rem)}
+  .stage .headline .script{font-size:1.5em}
+  .stage .struggle-panel{flex:0 1 auto;min-height:0;display:flex;flex-direction:column;padding:16px 20px 14px}
+  .panel-kicker{font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .stage .struggle-list{flex:1;min-height:0;overflow-y:auto;max-height:230px}
+  .stage .struggle-list h3{font-size:2rem;margin:0 0 6px}
+  .stage .struggle-list li > p:last-child{font-size:1.05rem}
+  .stage .struggle-panel .ss-controls{margin-top:10px;justify-content:space-between}
+  .stage .cta{margin-top:0}
+  .foot{flex:none;border-top:1px solid var(--line);background:#fff;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap}
+  .foot-links{display:flex;gap:8px;flex-wrap:wrap}
+  .foot-links button{border:1px solid var(--line);background:var(--bg);color:var(--navy);font:inherit;font-weight:600;font-size:.9rem;padding:8px 14px;border-radius:999px;cursor:pointer;min-height:40px}
+  .foot-links button:hover{border-color:var(--gold);background:#fff}
+  .foot-info{font-size:.82rem;color:var(--muted)}
+  .foot-info a{color:var(--navy);text-decoration:none}
+  .page-progress{display:none}
+  dialog.sheet{margin:auto;padding:22px 24px;border:0;border-radius:20px;width:min(900px,calc(100vw - 24px));max-width:none;max-height:calc(100svh - 24px);overflow-y:auto;background:var(--bg);color:var(--text);box-shadow:0 30px 90px rgba(0,0,0,.4)}
+  dialog.sheet::backdrop{background:rgba(6,12,28,.6);backdrop-filter:blur(3px)}
+  .sheet-close{position:sticky;top:0;float:right;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);font-size:1.5rem;line-height:1;cursor:pointer}
+  .sheet .section{padding:0;border:0}
+  .sheet .slides{height:min(62vh,600px)}
+  .sheet .slide-img img{max-height:calc(min(62vh,600px) - 110px)}
+  .lock-err{color:#ff9a8a;min-height:1.3em;margin-top:8px;font-size:.92rem}
+  @media (max-width:760px){
+    .topnav{padding:6px 12px;height:auto}
+    .topnav .brand{display:block;font-size:1.6rem}
+    .stage{padding:8px 12px;align-items:stretch}
+    .stage .struggles{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:8px 12px;height:auto;flex:1;min-height:0;max-height:none;align-items:stretch;align-self:stretch}
+    .stage .panel-kicker{display:none}
+    .stage .st-hint{display:none!important}
+    .stage .st-progress{margin-bottom:8px}
+    .stage-side{display:contents}
+    .stage .body-pic{grid-row:1;grid-column:1;height:min(25svh,210px);width:auto;aspect-ratio:900/1195;border-radius:14px}
+    .stage .st-hint{display:none}
+    .intro{grid-row:1;grid-column:2;align-self:center}
+    .stage .eyebrow{font-size:.62rem;padding:3px 8px}
+    .stage .name{font-size:1.55rem;margin-top:6px;line-height:1.1}
+    .stage .headline{font-size:.98rem;margin-top:4px}
+    .stage .struggle-panel{grid-row:2;grid-column:1 / -1}
+    .stage .cta{grid-row:3;grid-column:1 / -1}
+    .stage .struggle-panel{flex:1;min-height:0;width:100%;padding:10px 14px}
+    .stage .struggle-list{max-height:none}
+    .stage .struggle-list h3{font-size:1.7rem}
+    .stage .struggle-panel .ss-controls{order:0;margin:8px 0 0}
+    .stage .cta{flex-wrap:nowrap;gap:8px;width:100%;justify-self:stretch}
+    .stage .cta .btn{flex:1 1 0;padding:10px 6px;font-size:.88rem;min-height:44px}
+    .stage .cta .btn-gold{flex:1.6 1 0}
+    .foot{padding:8px 12px;justify-content:center;text-align:center}
+    .foot-links{justify-content:center;width:100%}
+    .foot-links button{flex:1;padding:7px 6px;font-size:.82rem}
+    .foot-info{font-size:.72rem;width:100%}
+    dialog.sheet{width:100vw;max-height:100svh;height:100svh;border-radius:0;padding:14px 14px 24px}
+  }
 </style>
 </head>
 <body>
@@ -496,7 +560,7 @@
     // On phones, keep the whole card on screen while stepping through it.
     function fit(){
       if (hint.parentNode) hint.remove();
-      if (innerWidth > 600) return;
+      return;
       var r = root.getBoundingClientRect(), top = 52;
       if (r.top < top - 2 || r.bottom > innerHeight + 2) window.scrollTo({top: scrollY + r.top - top, behavior: 'smooth'});
     }
@@ -592,52 +656,49 @@
     if (location.hash === '#book') show();
   })();
 
-  // ---------- Public page + sneak-peek locks ----------
+  // ---------- One-screen page, footer pop-ups, sneak-peek locks ----------
   var locks = [].slice.call(document.querySelectorAll('[data-lock]'));
-  locks.forEach(function(sec, k){
+  locks.forEach(function(sec){
     var slot = sec.querySelector('.lock-slot'); if (!slot) return;
-    if (k === 0) {
-      slot.innerHTML = '<div class="lock-panel"><p class="gate-kicker">Sneak peek · Not public yet</p>' +
-        '<p class="lock-title">A new presentation is coming</p>' +
-        '<p class="gate-msg">I\'m in the middle of launching it. The photos, the video and my songs are a private preview for now.</p>' +
-        '<div class="lock-what"><span>📷 My story in pictures</span><span>🎬 Who I Am in 2 Minutes</span><span>🎵 My songs</span></div>' +
-        '<form class="gate-form" id="gateForm" autocomplete="off"><input id="pw" type="password" placeholder="Enter password" aria-label="Password"><button id="go" type="submit">Unlock</button></form>' +
-        '<div id="gateErr" role="alert"></div></div>';
-    } else {
-      slot.innerHTML = '<div class="lock-mini"><span class="ico" aria-hidden="true">🔒</span><p>Part of the private sneak peek.</p><button type="button" data-unlock>Unlock with password</button></div>';
-    }
+    slot.innerHTML = '<div class="lock-panel"><p class="gate-kicker">Sneak peek · Not public yet</p>' +
+      '<p class="lock-title">A new presentation is coming</p>' +
+      '<p class="gate-msg">I\'m in the middle of launching it. The photos, video and songs are a private preview for now.</p>' +
+      '<form class="gate-form lock-form" autocomplete="off"><input type="password" placeholder="Enter password" aria-label="Password"><button type="submit">Unlock</button></form>' +
+      '<p class="lock-err" role="alert"></p></div>';
   });
-  document.addEventListener('click', function(e){
-    if (!e.target.closest || !e.target.closest('[data-unlock]')) return;
-    var f = document.getElementById('gateForm'); if (!f) return;
-    f.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(function(){ document.getElementById('pw').focus(); }, 400);
+  function openSheet(id){
+    var d = document.getElementById('sheet-' + id); if (!d || !d.showModal) return;
+    if (!d.open) d.showModal(); document.documentElement.style.overflow = 'hidden';
+    var inp = d.querySelector('.lock-form input'); if (inp && innerWidth > 600) setTimeout(function(){ inp.focus(); }, 50);
+  }
+  document.querySelectorAll('dialog.sheet').forEach(function(d){
+    d.querySelector('.sheet-close').onclick = function(){ d.close(); };
+    d.addEventListener('click', function(e){ if (e.target !== d) return; var r = d.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close(); });
+    d.addEventListener('close', function(){ document.documentElement.style.overflow = ''; d.querySelectorAll('video,audio').forEach(function(m){ m.pause(); }); });
   });
+  document.addEventListener('click', function(e){ var t = e.target.closest && e.target.closest('[data-sheet]'); if (t) { e.preventDefault(); openSheet(t.getAttribute('data-sheet')); } });
   var st = document.getElementById('struggles'); if (st) struggles(st);
-  pageProgress();
 
   function show(text){
     var parts = JSON.parse(text).parts || {};
     locks.forEach(function(sec){ var id = sec.getAttribute('data-lock'); if (parts[id] != null) { sec.innerHTML = parts[id]; sec.removeAttribute('data-lock'); } });
     var ss = document.getElementById('slideshow'); if (ss) slideshow(ss);
     document.querySelectorAll('[data-media]').forEach(function(el){ loadMedia(el.getAttribute('data-media'), el); });
-    document.querySelectorAll('#app img, #app video').forEach(function(m){ m.addEventListener('load', function(){ dispatchEvent(new Event('resize')); }); });
-    dispatchEvent(new Event('resize'));
-    if (location.hash && location.hash !== '#book') { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   }
 
-  var form = document.getElementById('gateForm'), err = document.getElementById('gateErr'), go = document.getElementById('go');
-  if (form) form.addEventListener('submit', async function(e){
+  document.addEventListener('submit', async function(e){
+    var form = e.target; if (!form.classList || !form.classList.contains('lock-form')) return;
     e.preventDefault();
-    var pw = document.getElementById('pw').value;
+    var inp = form.querySelector('input'), go = form.querySelector('button'), err = form.parentNode.querySelector('.lock-err');
     if (!window.crypto || !crypto.subtle) { err.textContent = 'Please open this page over https in a modern browser.'; return; }
     go.disabled = true; go.textContent = 'Opening…'; err.textContent = '';
-    var top = document.getElementById('story');
-    try { var text = await unlock(pw); ssSet(pw); show(text); if (top) top.scrollIntoView({behavior:'smooth'}); }
+    try { var text = await unlock(inp.value); ssSet(inp.value); show(text); }
     catch(x){ err.textContent = 'Wrong password.'; form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); go.disabled = false; go.textContent = 'Unlock'; }
   });
 
   var saved = ssGet();
   if (saved && window.crypto && crypto.subtle) unlock(saved).then(show, function(){ ssSet(null); });
+  var h = location.hash.slice(1); if (/^(story|video|songs)$/.test(h)) openSheet(h);
 })();
 </script>
 </body>
