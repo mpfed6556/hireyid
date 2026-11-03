@@ -165,7 +165,7 @@
 <div id="gate">
   <form class="gate-card" id="gateForm" autocomplete="off">
     <div class="script">Yossi</div>
-    <p>Hamaspik presentation · private page<br>Enter the password to continue.</p>
+    <p>Enter password</p>
     <input id="pw" type="password" placeholder="Password" aria-label="Password" autofocus>
     <button id="go" type="submit">Open</button>
     <div id="gateErr" role="alert"></div>
@@ -228,7 +228,7 @@
     if (!window.crypto || !crypto.subtle) { err.textContent = 'Please open this page over https in a modern browser.'; return; }
     go.disabled = true; go.textContent = 'Opening…'; err.textContent = '';
     try { var html = await unlock(pw); ssSet(pw); show(html); }
-    catch(x){ err.textContent = 'That password is not right. Try again.'; form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); }
+    catch(x){ err.textContent = 'Wrong password.'; form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); }
     finally { go.disabled = false; go.textContent = 'Open'; }
   });
 
