@@ -155,6 +155,12 @@
     .struggle-panel .ss-controls{justify-content:center}
   }
 
+  .st-progress{height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin-bottom:14px}
+  .st-progress span{display:block;height:100%;width:0;background:var(--gold);transition:width .4s ease}
+  .body-pic{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  @media (hover:hover){.st-hint{display:none}}
+  .st-hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:2;margin:0;line-height:1.2;white-space:nowrap;background:rgba(5,12,28,.75);color:var(--gold-soft);font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:999px;pointer-events:none}
+
   /* ---------- Hacks ---------- */
   .hacks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:28px}
   .hack{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
@@ -228,12 +234,17 @@
     .media-status a{display:inline-block;padding:10px 0}
     .song{padding:14px 16px}
     .lyrics{font-size:1.05em}
-    .struggles{gap:12px}
-    .body-pic{width:min(58vw,250px)}
-    .struggle-panel{padding:16px 18px 20px}
-    .struggle-panel .ss-controls{order:-1;margin:0 0 12px}
-    .struggle-list h3{font-size:2rem}
-    .struggle-list li > p:last-child{font-size:1.08rem}
+    #hand{padding-bottom:16px}
+    .struggles{display:flex;flex-direction:column;gap:10px;height:calc(100svh - 64px);min-height:520px;margin-top:14px}
+    .body-pic{flex:none;height:min(42svh,330px);width:auto;aspect-ratio:900/1195;margin:0 auto}
+    .struggle-panel{flex:1;min-height:0;width:100%;padding:12px 16px 10px;display:flex;flex-direction:column}
+    .st-progress{margin-bottom:10px;flex:none}
+    .struggle-list.more{-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+    .struggle-list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+    .struggle-panel .ss-controls{order:0;margin:8px 0 0;justify-content:space-between;flex:none}
+    .struggle-panel .ss-btn{width:64px;height:52px;border-radius:14px;font-size:1.9rem}
+    .struggle-list h3{font-size:1.9rem;margin:0 0 6px}
+    .struggle-list li > p:last-child{font-size:1.05rem;line-height:1.55}
     .spoken.big{font-size:1.25em}
   }
 
@@ -316,7 +327,11 @@
   function struggles(root){
     var items = root.querySelectorAll('.struggle-list li'), n = items.length, i = 0;
     var ring = root.querySelector('.ring'), count = root.querySelector('.ss-count'), pic = root.querySelector('.body-pic');
-    var zoom = document.createElement('div'); zoom.className = 'body-zoom'; while (pic.firstChild) zoom.appendChild(pic.firstChild); pic.appendChild(zoom);
+    var list = root.querySelector('.struggle-list'), panel = root.querySelector('.struggle-panel');
+    var track = document.createElement('div'); track.className = 'st-progress'; var bar = document.createElement('span'); track.appendChild(bar); panel.insertBefore(track, panel.firstChild);
+    var hint = document.createElement('p'); hint.className = 'st-hint'; hint.textContent = 'Tap the photo or swipe';
+    pic.addEventListener('click', function(e){ var r = pic.getBoundingClientRect(); go(e.clientX - r.left < r.width * 0.4 ? i-1 : i+1); fit(); hint.remove(); if (navigator.vibrate) navigator.vibrate(8); });
+    var zoom = document.createElement('div'); zoom.className = 'body-zoom'; while (pic.firstChild) zoom.appendChild(pic.firstChild); pic.appendChild(zoom); pic.appendChild(hint);
     function go(k){
       items[i].classList.remove('on'); i = (k + n) % n; var it = items[i]; it.classList.add('on');
       var r = +it.dataset.r, z = r < 10 ? Math.min(2.6, 13 / r) : 1;
@@ -326,13 +341,25 @@
       zoom.style.transform = 'translate(' + cl(50 - it.dataset.x * z) + '%,' + cl(50 - it.dataset.y * z) + '%) scale(' + z + ')';
       ring.style.left = it.dataset.x + '%'; ring.style.top = it.dataset.y + '%'; ring.style.width = (r * 2) + '%';
       count.textContent = (i+1) + ' / ' + n;
+      bar.style.width = ((i+1) / n * 100) + '%';
+      list.scrollTop = 0;
+      fade();
     }
-    root.querySelector('[data-st="prev"]').onclick = function(){ go(i-1); };
-    root.querySelector('[data-st="next"]').onclick = function(){ go(i+1); };
+    function fade(){ list.classList.toggle('more', list.scrollHeight - list.scrollTop - list.clientHeight > 4); }
+    // On phones, keep the whole card on screen while stepping through it.
+    function fit(){
+      if (hint.parentNode) hint.remove();
+      if (innerWidth > 600) return;
+      var r = root.getBoundingClientRect(), top = 52;
+      if (r.top < top - 2 || r.bottom > innerHeight + 2) window.scrollTo({top: scrollY + r.top - top, behavior: 'smooth'});
+    }
+    root.querySelector('[data-st="prev"]').onclick = function(){ go(i-1); fit(); };
+    root.querySelector('[data-st="next"]').onclick = function(){ go(i+1); fit(); };
+    list.addEventListener('scroll', fade, {passive:true});
     root.addEventListener('keydown', function(e){ if (e.key === 'ArrowLeft') go(i-1); else if (e.key === 'ArrowRight') go(i+1); });
     var x0 = null;
     root.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
-    root.addEventListener('touchend', function(e){ if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) go(dx < 0 ? i+1 : i-1); });
+    root.addEventListener('touchend', function(e){ if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) { go(dx < 0 ? i+1 : i-1); fit(); } });
     go(0);
   }
 
