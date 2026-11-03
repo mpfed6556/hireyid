@@ -118,6 +118,21 @@
   .mission .script{display:block;font-size:3rem;line-height:1.1}
   .mission.center{text-align:center;margin:24px auto 0}
 
+  .slideshow{margin-top:22px;outline:none}
+  .slides{position:relative;height:min(78vh,720px);border-radius:18px;overflow:hidden;background:#050c1c;border:1px solid var(--line)}
+  .slide{position:absolute;inset:0;margin:0;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s}
+  .slide.on{opacity:1;visibility:visible}
+  .slide-head{padding:18px 20px 12px;text-align:center;font-family:Caveat,cursive;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--gold);line-height:1.1}
+  .slide-head .tag{display:block;font-family:Inter,sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .slide-img{display:flex;justify-content:center;padding:0 12px 14px}
+  .slide-img img{max-width:100%;max-height:calc(min(78vh,720px) - 120px);object-fit:contain;border-radius:12px;display:block}
+  .ss-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
+  .ss-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--gold-soft);font-size:1.6rem;line-height:1;cursor:pointer;display:grid;place-items:center}
+  .ss-btn:hover{background:var(--gold);color:#1a1405}
+  .ss-play{font-size:1.1rem}
+  .ss-count{min-width:70px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
+  @media (max-width:820px){.slides{height:min(66vh,560px)}.slide-img img{max-height:calc(min(66vh,560px) - 110px)}}
+
   /* ---------- Hacks ---------- */
   .hacks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:28px}
   .hack{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
@@ -215,12 +230,30 @@
     } catch(e) { if (status) status.textContent = 'Could not load. Check your connection and refresh.'; }
   }
 
+  function slideshow(root){
+    var slides = root.querySelectorAll('.slide'), n = slides.length, i = 0, timer = null;
+    var count = root.querySelector('.ss-count'), play = root.querySelector('.ss-play');
+    function go(k){ slides[i].classList.remove('on'); i = (k + n) % n; slides[i].classList.add('on'); count.textContent = (i+1) + ' / ' + n; }
+    function stop(){ clearInterval(timer); timer = null; play.textContent = '▶'; play.setAttribute('aria-label','Play slideshow'); }
+    function start(){ stop(); timer = setInterval(function(){ go(i+1); }, 5000); play.textContent = '❚❚'; play.setAttribute('aria-label','Pause slideshow'); }
+    root.querySelector('[data-ss="prev"]').onclick = function(){ stop(); go(i-1); };
+    root.querySelector('[data-ss="next"]').onclick = function(){ stop(); go(i+1); };
+    play.onclick = function(){ timer ? stop() : start(); };
+    root.addEventListener('keydown', function(e){ if (e.key === 'ArrowLeft') { stop(); go(i-1); } else if (e.key === 'ArrowRight') { stop(); go(i+1); } });
+    var x0 = null, box = root.querySelector('.slides');
+    box.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+    box.addEventListener('touchend', function(e){ if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) { stop(); go(dx < 0 ? i+1 : i-1); } });
+    box.addEventListener('click', function(){ stop(); go(i+1); });
+    go(0);
+  }
+
   function show(html){
     var app = document.getElementById('app');
     app.innerHTML = html;
     app.hidden = false;
     document.getElementById('gate').style.display = 'none';
     if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+    var ss = document.getElementById('slideshow'); if (ss) slideshow(ss);
     document.querySelectorAll('[data-media]').forEach(function(el){ loadMedia(el.getAttribute('data-media'), el); });
   }
 
