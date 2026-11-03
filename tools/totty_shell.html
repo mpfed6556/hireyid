@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Yossi · Hamaspik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1630; --bg2:#10203f; --panel:#132648; --line:rgba(214,175,92,.35);
+    --gold:#d6af5c; --gold-soft:#e9cf92; --text:#f4efe4; --muted:#b9c2d3;
+    --say:#5fa8d3; --sing:#d6af5c; --show:#9b8cf0; --play:#6fc59b;
+    --radius:16px; --fs:1rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.65;font-size:var(--fs);-webkit-text-size-adjust:100%}
+  body.big{--fs:1.25rem}
+  .script{font-family:Caveat,cursive;font-weight:700;color:var(--gold)}
+  h1,h2,h3,.headline,.subhead,blockquote,.spoken{font-family:"Source Serif 4",Georgia,serif}
+  a{color:inherit}
+  button{font:inherit}
+
+  /* ---------- Gate ---------- */
+  #gate{min-height:100vh;display:grid;place-items:center;padding:24px 16px;
+    background:radial-gradient(ellipse at 30% 0%,rgba(214,175,92,.18),transparent 60%),var(--bg)}
+  .gate-card{width:100%;max-width:400px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:40px 28px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  .gate-card .script{font-size:4rem;line-height:1}
+  .gate-card p{color:var(--muted);margin:10px 0 24px}
+  .gate-card input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:1.05rem;text-align:center;outline:none}
+  .gate-card input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(214,175,92,.25)}
+  .gate-card button{margin-top:14px;width:100%;padding:14px;border:0;border-radius:12px;background:var(--gold);color:#1a1405;font-weight:700;font-size:1.05rem;cursor:pointer}
+  .gate-card button:hover{background:var(--gold-soft)}
+  .gate-card button:disabled{opacity:.6;cursor:wait}
+  #gateErr{color:#ff9a8a;min-height:1.4em;margin-top:12px;font-size:.92rem}
+  .shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+  /* ---------- Nav ---------- */
+  .topnav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:16px;padding:10px 24px;background:rgba(11,22,48,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .brand{font-family:Caveat,cursive;font-size:1.9rem;font-weight:700;color:var(--gold);text-decoration:none;line-height:1}
+  .navlinks{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+  .navlinks::-webkit-scrollbar{display:none}
+  .navlinks a{text-decoration:none;color:var(--muted);font-size:.9rem;font-weight:500;padding:6px 12px;border-radius:8px;white-space:nowrap}
+  .navlinks a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  .navtools{display:flex;gap:8px}
+  .chip{border:1px solid var(--line);background:transparent;color:var(--gold-soft);padding:6px 12px;border-radius:999px;font-size:.82rem;cursor:pointer;white-space:nowrap}
+  .chip:hover,.chip[aria-pressed="true"]{background:var(--gold);color:#1a1405}
+
+  /* ---------- Hero ---------- */
+  .hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:48px;align-items:center;max-width:1120px;margin:0 auto;padding:56px 24px 40px}
+  .hero-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 12%;border-radius:22px;border:1px solid var(--line);box-shadow:0 30px 70px rgba(0,0,0,.5);display:block}
+  .eyebrow{display:inline-block;color:var(--gold-soft);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.85rem;font-weight:500}
+  .hero h1.script{font-size:clamp(4.5rem,11vw,7.5rem);line-height:.95;margin-top:14px}
+  .headline{font-size:clamp(2rem,4.5vw,3rem);font-weight:700;line-height:1.1}
+  .subhead{font-size:clamp(1.3rem,2.6vw,1.8rem);color:var(--muted)}
+  .tagline{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.95rem}
+  .script.small{font-size:1.8rem}
+  .quote{margin-top:26px;padding:18px 22px;border-left:3px solid var(--gold);background:rgba(255,255,255,.04);border-radius:0 12px 12px 0;font-size:1.2rem}
+  .quote .script{display:block;font-size:1.9rem;margin-top:4px}
+
+  /* ---------- Sections ---------- */
+  main{max-width:1120px;margin:0 auto;padding:0 24px 64px}
+  .section{padding:56px 0;border-top:1px solid var(--line);scroll-margin-top:64px}
+  .kicker{color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.8rem}
+  .section h2{font-size:clamp(1.8rem,4vw,2.5rem);line-height:1.2;margin:6px 0 10px}
+  .lead{color:var(--muted);max-width:60ch;font-size:1.08em}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-top:28px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .card-icon{font-size:1.6rem}
+  .card h3{font-size:1.2rem;margin:8px 0 4px;color:var(--gold-soft)}
+  .card p{color:var(--muted);font-size:.96em}
+
+  /* ---------- Timeline ---------- */
+  .timeline{list-style:none;margin-top:28px;position:relative}
+  .timeline::before{content:"";position:absolute;left:35px;top:8px;bottom:8px;width:2px;background:var(--line)}
+  .step{display:grid;grid-template-columns:72px 1fr;gap:18px;margin-bottom:18px;position:relative}
+  .badge{align-self:start;z-index:1;display:inline-flex;justify-content:center;padding:6px 0;border-radius:999px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#0b1630;margin-top:14px}
+  .badge.say{background:var(--say)} .badge.sing{background:var(--sing)} .badge.show{background:var(--show)} .badge.play-b{background:var(--play);padding:6px 16px}
+  .step-body{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;min-width:0}
+  .step-body h3{font-size:1.25rem;color:var(--gold-soft)}
+  .step-body > p + p{margin-top:10px}
+  .spoken{font-size:1.15em;font-style:italic}
+  .spoken.big{font-size:1.4em;max-width:52ch}
+  .note{margin-top:10px;font-size:.85em;color:#ffcf8a;background:rgba(255,190,90,.1);border:1px dashed rgba(255,190,90,.5);border-radius:8px;padding:6px 10px;display:inline-block}
+  .three{list-style:none;margin-top:12px;display:grid;gap:10px}
+  .three li{padding-left:14px;border-left:2px solid var(--gold)}
+  .three strong{color:var(--gold-soft)}
+  details summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"▸ Show words";margin-left:auto;font-size:.82rem;color:var(--gold);font-weight:600}
+  details[open] summary::after{content:"▾ Hide words"}
+  .tune{color:var(--muted);font-size:.9em;font-style:italic}
+  .lyrics{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-family:"Source Serif 4",Georgia,serif;font-size:1.1em;columns:2 260px;column-gap:40px}
+  .lyrics p{margin-bottom:14px;break-inside:avoid}
+  .lyrics .label{margin-bottom:2px;font-family:Inter,sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);break-after:avoid}
+
+  .media-wrap{margin-top:14px}
+  .media-wrap video{width:100%;max-width:720px;display:block;border-radius:12px;border:1px solid var(--line);background:#000;aspect-ratio:352/288}
+  .media-wrap audio{width:100%;display:block}
+  .media-status{font-size:.85em;color:var(--muted);margin-top:6px}
+  .audio-card{display:flex;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-top:24px;max-width:720px}
+  .audio-card > div{flex:1;min-width:0}
+  .audio-icon{font-size:2rem;color:var(--gold);width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:rgba(214,175,92,.14);flex:none}
+
+  /* ---------- Hacks ---------- */
+  .hacks{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:28px}
+  .hack{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .hack h3{font-size:1.15rem;color:var(--gold-soft);margin-bottom:6px}
+  .hack p{color:var(--text);opacity:.9;font-size:.96em}
+  .more-title{margin:40px 0 14px;font-size:1.2rem;color:var(--gold-soft)}
+  .pills{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+  .pills li{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.9em;color:var(--muted)}
+
+  /* ---------- Closing ---------- */
+  .closing{text-align:center}
+  .closing .spoken.big,.closing .lead{margin-left:auto;margin-right:auto}
+  .play{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin:28px 0}
+  .play ul{list-style:none;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .play li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 16px;font-weight:600}
+  .thanks{font-size:clamp(2.2rem,5vw,3rem);margin:10px 0 36px}
+  .family{margin:0 auto 40px;max-width:960px}
+  .family img{width:100%;display:block;border-radius:18px;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  .family figcaption{margin-top:12px;font-family:Caveat,cursive;font-size:2rem;font-weight:700;color:var(--gold)}
+  .values{max-width:640px;margin:0 auto;border:1px solid var(--line);border-radius:var(--radius);padding:24px;background:var(--panel)}
+  .values strong{letter-spacing:.04em;text-transform:uppercase;font-size:.95em}
+  .gold{color:var(--gold)}
+  .values .gold{margin-top:10px}
+  .footer-line{margin-top:36px;font-family:"Source Serif 4",serif;font-size:1.2em}
+  .footer-line .script{font-size:1.6em}
+
+  @media (max-width:820px){
+    .hero{grid-template-columns:1fr;gap:28px;padding-top:28px;text-align:center}
+    .hero-photo{max-width:340px;margin:0 auto;width:100%}
+    .quote{text-align:left}
+    .topnav{padding:8px 16px;gap:10px;flex-wrap:wrap}
+    .navlinks{order:3;flex-basis:100%}
+    .navtools{margin-left:auto}
+    main{padding:0 16px 48px}
+    .hero{padding-left:16px;padding-right:16px}
+    .timeline::before{left:24px}
+    .step{grid-template-columns:50px 1fr;gap:10px}
+    .badge{font-size:.66rem}
+    .step-body{padding:14px 16px}
+  }
+  @media print{
+    .topnav,#gate{display:none!important}
+    details .lyrics{display:block}
+  }
+</style>
+</head>
+<body>
+<div id="gate">
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <div class="script">Yossi</div>
+    <p>Hamaspik presentation · private page<br>Enter the password to continue.</p>
+    <input id="pw" type="password" placeholder="Password" aria-label="Password" autofocus>
+    <button id="go" type="submit">Open</button>
+    <div id="gateErr" role="alert"></div>
+  </form>
+</div>
+<div id="app" hidden></div>
+
+<script id="payload" type="application/json">{{PAYLOAD}}</script>
+<script>
+(function(){
+  var P = JSON.parse(document.getElementById('payload').textContent);
+  var KEY = 'yossi-totty-pw';
+  function b64(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+  function ssGet(){try{return sessionStorage.getItem(KEY);}catch(e){return null;}}
+  function ssSet(v){try{v==null?sessionStorage.removeItem(KEY):sessionStorage.setItem(KEY,v);}catch(e){}}
+
+  var KEYOBJ = null;
+  async function unlock(pw){
+    var norm = pw.trim().toLowerCase();
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(norm), 'PBKDF2', false, ['deriveKey']);
+    var key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(P.salt), iterations:P.iter, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    var buf = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(P.iv)}, key, b64(P.ct));
+    KEYOBJ = key;
+    return new TextDecoder().decode(buf);
+  }
+
+  async function loadMedia(name, el){
+    var m = (P.media || {})[name], status = el.parentNode.querySelector('.media-status');
+    if (!m) { if (status) status.textContent = 'Not available.'; return; }
+    try {
+      var res = await fetch(m.file);
+      if (!res.ok) throw new Error(res.status);
+      var plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(m.iv)}, KEYOBJ, await res.arrayBuffer());
+      el.src = URL.createObjectURL(new Blob([plain], {type:m.type}));
+      if (status) status.remove();
+    } catch(e) { if (status) status.textContent = 'Could not load. Check your connection and refresh.'; }
+  }
+
+  function show(html){
+    var app = document.getElementById('app');
+    app.innerHTML = html;
+    app.hidden = false;
+    document.getElementById('gate').style.display = 'none';
+    if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+    var big = document.getElementById('bigText');
+    try { if (localStorage.getItem('yossi-big') === '1') { document.body.classList.add('big'); big.setAttribute('aria-pressed','true'); } } catch(e){}
+    big.addEventListener('click', function(){
+      var on = document.body.classList.toggle('big');
+      big.setAttribute('aria-pressed', on ? 'true' : 'false');
+      try { localStorage.setItem('yossi-big', on ? '1' : '0'); } catch(e){}
+    });
+    document.querySelectorAll('[data-media]').forEach(function(el){ loadMedia(el.getAttribute('data-media'), el); });
+    document.getElementById('lockBtn').addEventListener('click', function(){ ssSet(null); location.reload(); });
+  }
+
+  var form = document.getElementById('gateForm'), err = document.getElementById('gateErr'), go = document.getElementById('go');
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var pw = document.getElementById('pw').value;
+    if (!window.crypto || !crypto.subtle) { err.textContent = 'Please open this page over https in a modern browser.'; return; }
+    go.disabled = true; go.textContent = 'Opening…'; err.textContent = '';
+    try { var html = await unlock(pw); ssSet(pw); show(html); }
+    catch(x){ err.textContent = 'That password is not right. Try again.'; form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); }
+    finally { go.disabled = false; go.textContent = 'Open'; }
+  });
+
+  var saved = ssGet();
+  if (saved && window.crypto && crypto.subtle) unlock(saved).then(show, function(){ ssSet(null); });
+})();
+</script>
+</body>
+</html>
