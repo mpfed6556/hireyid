@@ -439,6 +439,38 @@
     .foot-info{font-size:.72rem;width:100%}
     dialog.sheet{width:100vw;max-height:100svh;height:100svh;border-radius:0;padding:14px 14px 24px}
   }
+  .foot-icons{display:none}
+  @media (max-width:760px){
+    body{min-height:100dvh}
+    .stage .eyebrow{display:none}
+    .stage .body-pic{height:min(27svh,230px)}
+    .stage .name{font-size:1.75rem;margin-top:0}
+    .stage .headline{font-size:1.02rem;line-height:1.35}
+    .stage .struggle-panel{padding:12px 16px 12px}
+    .stage .struggle-list .part{font-size:.7rem}
+    .stage .struggle-list li > p:last-child{font-size:1.04rem;line-height:1.5}
+    .stage .struggle-panel .ss-btn{width:56px;height:48px}
+    .stage .cta .btn{min-height:48px;font-size:.92rem}
+    .foot{flex-wrap:nowrap;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+    .foot-info{display:none}
+    .foot-links{flex:1;width:auto;gap:6px}
+    .foot-links button{padding:8px 4px;font-size:.8rem;min-height:44px}
+    .foot-icons{display:flex;gap:6px}
+    .foot-icons a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--navy);text-decoration:none;font-size:1.1rem}
+  }
+  @media (max-width:760px){.foot-links button{white-space:nowrap}.topnav .nav-cta{min-height:40px;display:inline-flex;align-items:center}}
+  @media (max-width:360px){.stage .name{font-size:1.5rem}.foot-links button{font-size:.8rem}.foot-links .em{display:none}.foot-icons a{width:40px;height:44px}}
+  /* short screens (phone held sideways): let the page scroll instead of squeezing */
+  @media (max-height:560px){
+    body,#app{min-height:0;display:block}
+    .stage{display:block;padding:10px 16px}
+    .stage .struggles{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:none;height:auto;max-height:none;gap:16px;align-items:start}
+    .stage-side{display:flex;height:auto;max-height:none}
+    .stage .body-pic{grid-row:auto;grid-column:auto;height:min(80svh,360px)}
+    .intro,.stage .struggle-panel,.stage .cta{grid-row:auto;grid-column:auto}
+    .stage .struggle-list{max-height:none;overflow:visible}
+    .foot-info{display:block}.foot-icons{display:none}
+  }
 </style>
 </head>
 <body>
