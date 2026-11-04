@@ -452,6 +452,20 @@
     .hero-band .cta .btn,.contact-band .cta .btn{flex:1 1 100%}
     .contact-band{padding:32px 18px}
   }
+  /* ---------- Admin toggle ---------- */
+  .admin-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;color:var(--navy);font:inherit;font-size:.85rem;font-weight:700;padding:6px 12px 6px 6px;border-radius:999px;cursor:pointer;min-height:40px;white-space:nowrap}
+  .admin-toggle .knob{position:relative;width:38px;height:22px;border-radius:999px;background:#d5dbe0;transition:background .25s}
+  .admin-toggle .knob::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s}
+  .admin-toggle[aria-checked="true"] .knob{background:#2f8f6b}
+  .admin-toggle[aria-checked="true"] .knob::after{transform:translateX(16px)}
+  .admin-toggle:focus-visible{outline:3px solid #f0ad37;outline-offset:3px}
+  #adminDlg{--g:#d6af5c;--gs:#ecd49a;margin:auto;padding:26px 24px 20px;border:0;border-radius:20px;width:min(380px,calc(100vw - 24px));text-align:center;color:#f4efe4;background:linear-gradient(135deg,#20555a,#123b45 70%);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  #adminDlg::backdrop{background:rgba(6,12,28,.6);backdrop-filter:blur(3px)}
+  .admin-title{font-family:"Source Serif 4",serif;font-size:1.6rem;color:#ffd17b}
+  .admin-sub{color:#d7e2e2;margin:8px 0 4px;font-size:.95rem}
+  #adminDlg .gate-form{margin:14px 0 0}
+  @media (max-width:900px){.admin-toggle .lbl{font-size:.8rem}.admin-toggle{padding:5px 10px 5px 5px}}
+  @media (max-width:400px){.admin-toggle .lbl{display:none}.admin-toggle{padding:5px}}
 </style>
 <style>
 
@@ -511,6 +525,13 @@ main{max-width:1190px;padding:0 28px 35px}.section{padding:clamp(70px,9vw,125px)
 </dialog>
 
 
+<dialog id="adminDlg" aria-labelledby="adminTitle">
+  <button type="button" class="bk-close" aria-label="Close">×</button>
+  <h2 id="adminTitle" class="admin-title">Admin mode</h2>
+  <p class="admin-sub">Enter the password to show the photos, video and songs on this device.</p>
+  <form class="gate-form lock-form admin-form" autocomplete="off"><input type="password" placeholder="Password" aria-label="Password"><button type="submit">Turn on</button></form>
+  <p class="lock-err" role="alert"></p>
+</dialog>
 <script id="payload" type="application/json">{{PAYLOAD}}</script>
 <script>
 (function(){
@@ -733,6 +754,7 @@ main{max-width:1190px;padding:0 28px 35px}.section{padding:clamp(70px,9vw,125px)
   pageProgress();
 
   function show(text){
+    setAdmin(true);
     var parts = JSON.parse(text).parts || {};
     locks.forEach(function(sec){ var id = sec.getAttribute('data-lock'); if (parts[id] != null) { sec.innerHTML = parts[id]; sec.removeAttribute('data-lock'); } });
     var ss = document.getElementById('slideshow'); if (ss) slideshow(ss);
@@ -747,12 +769,28 @@ main{max-width:1190px;padding:0 28px 35px}.section{padding:clamp(70px,9vw,125px)
     var inp = form.querySelector('input'), go = form.querySelector('button'), err = form.parentNode.querySelector('.lock-err');
     if (!window.crypto || !crypto.subtle) { err.textContent = 'Please open this page over https in a modern browser.'; return; }
     go.disabled = true; go.textContent = 'Opening…'; err.textContent = '';
-    try { var text = await unlock(inp.value); ssSet(inp.value); show(text); }
+    try { var text = await unlock(inp.value); ssSet(inp.value); if (form.classList.contains('admin-form')) { lsSet(inp.value); var ad = document.getElementById('adminDlg'); if (ad.open) ad.close(); inp.value = ''; go.disabled = false; go.textContent = 'Turn on'; } show(text); }
     catch(x){ err.textContent = 'Wrong password.'; form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); go.disabled = false; go.textContent = 'Unlock'; }
   });
 
-  var saved = ssGet();
-  if (saved && window.crypto && crypto.subtle) unlock(saved).then(show, function(){ ssSet(null); });
+  // ---------- Admin mode: show / hide the media on this device ----------
+  var AKEY = 'yossi-admin-pw', atog = document.querySelector('.admin-toggle'), adlg = document.getElementById('adminDlg'), isOpen = false;
+  function lsGet(){ try { return localStorage.getItem(AKEY); } catch(e){ return null; } }
+  function lsSet(v){ try { v == null ? localStorage.removeItem(AKEY) : localStorage.setItem(AKEY, v); } catch(e){} }
+  function setAdmin(on){ isOpen = on; if (atog) atog.setAttribute('aria-checked', on ? 'true' : 'false'); }
+  if (adlg) {
+    adlg.querySelector('.bk-close').onclick = function(){ adlg.close(); };
+    adlg.addEventListener('click', function(e){ if (e.target !== adlg) return; var r = adlg.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) adlg.close(); });
+  }
+  if (atog) atog.addEventListener('click', function(){
+    if (isOpen) { lsSet(null); ssSet(null); location.reload(); return; }
+    var pw = lsGet() || ssGet();
+    if (pw && window.crypto && crypto.subtle) { unlock(pw).then(function(t){ lsSet(pw); show(t); }, function(){ lsSet(null); adlg.showModal(); }); return; }
+    adlg.showModal(); setTimeout(function(){ adlg.querySelector('input').focus(); }, 50);
+  });
+
+  var saved = lsGet() || ssGet();
+  if (saved && window.crypto && crypto.subtle) unlock(saved).then(show, function(){ ssSet(null); lsSet(null); });
 })();
 </script>
 <script>/* Progressive visual enhancements only; original site logic remains intact. */
