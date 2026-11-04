@@ -404,7 +404,7 @@ function viewToday(){
   ${STEPS.map((s,i)=>{const d=st.done[s.id];return `<div class="step${d?' done':''}"><div class="num">${d?'✓':i+1}</div><div class="body"><div class="title">${esc(s.t)}</div><div class="tip">${esc(s.tip)}</div>${d?`<div class="when">Done at ${time(d)}</div>`:''}
     <div class="acts">${s.apps.map(k=>`<a class="btn small" href="${esc(app(k).url)}" target="_blank" rel="noopener">Open ${esc(app(k).name)}</a>`).join('')}${d?`<button class="btn small ghost" data-a="undo" data-v="${s.id}">Undo</button>`:`<button class="btn small primary" data-a="ask" data-v="${s.id}">Done</button>`}</div></div></div>`}).join('')}
   <div class="apps"><h2>All my apps</h2>${Object.keys(DEFAULT_APPS).map(k=>`<a href="${esc(app(k).url)}" target="_blank" rel="noopener">${esc(app(k).name)}</a>`).join('')}</div>
-  <details class="edit"><summary>Change app links</summary>${Object.keys(DEFAULT_APPS).map(k=>`<div class="editrow"><input value="${esc(app(k).name)}" data-app="${k}" data-f="name"><input value="${esc(app(k).url)}" data-app="${k}" data-f="url"></div>`).join('')}<p style="margin-top:8px">Paste the address from your Chrome tab. Saves automatically.</p></details>`;
+  <details class="edit"${st.zoom?'':' open'}><summary>My details & app links</summary><div class="editrow"><input value="My name" disabled><input data-me="me" value="${esc(st.me||'Miriam')}"></div><div class="editrow"><input value="Zoom booking link" disabled><input data-me="zoom" placeholder="Paste your Zoom Scheduler link" value="${esc(st.zoom||'')}"></div>${Object.keys(DEFAULT_APPS).map(k=>`<div class="editrow"><input value="${esc(app(k).name)}" data-app="${k}" data-f="name"><input value="${esc(app(k).url)}" data-app="${k}" data-f="url"></div>`).join('')}<p style="margin-top:8px">Paste the address from your Chrome tab. Saves automatically.</p></details>`;
 }
 function viewOnb(){
   const n=Object.keys(st.onb).length;let sec='';
@@ -481,6 +481,7 @@ document.addEventListener('input',e=>{const el=e.target;
   if(el.id==='panelText'&&panel)panel.text=el.value;
 });
 document.addEventListener('change',e=>{const el=e.target;
+  if(el.dataset.me){st[el.dataset.me]=el.value.trim();save();return}
   if(el.dataset.pf){const p=P(el.dataset.id);if(!p)return;const f=el.dataset.pf,old=p[f];p[f]=el.value;
     if(f==='status'&&el.value==='Not a fit'){ask({title:'Mark as not a fit?',text:'In Recruiterflow: disqualify from Applied (sends the automatic email). Already spoke to them? Move to Sourced first and send a personal note instead.',yes:'Yes, not a fit',no:'Cancel',onYes:()=>{},onNo:()=>{p.status=old}});return}
     save();if(f!=='name'&&f!=='phone'&&f!=='email'&&f!=='company')render();return}if(el.dataset.app){const k=el.dataset.app;st.apps[k]=Object.assign({},st.apps[k]||{},{[el.dataset.f]:el.value.trim()||DEFAULT_APPS[k][el.dataset.f]});save();render();const d=document.querySelector('details.edit');if(d)d.open=true}});
