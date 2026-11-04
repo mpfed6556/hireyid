@@ -85,7 +85,7 @@ details.cand .body{padding:0 12px 12px;display:grid;gap:10px}
 .banner.gold{background:var(--gold-bg);color:var(--gold)}
 .banner.blue{background:var(--blue-bg);color:var(--blue)}
 .check{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:.88rem;cursor:pointer}
-.check input{width:auto;margin-top:3px}
+.check input{width:auto;margin-top:3px;flex-shrink:0}
 .bar{height:6px;background:var(--sand);border-radius:6px;overflow:hidden;margin:6px 0}
 .bar i{display:block;height:100%;background:var(--accent)}
 .tpl textarea{min-height:160px;font-size:.85rem}
@@ -155,6 +155,33 @@ const CHECKLIST=[
   'LinkedIn search → import to RF → reach out',
   'Pipeline view: next action for every candidate'
 ];
+const ONB_SECTIONS=['Setup','LinkedIn','Ask Shloime / Tirzah','Other'];
+const DEFAULT_ONBOARD=[
+  ['Setup','Set Zoom Scheduler availability (from 10am) → get booking link'],
+  ['Setup','Booking link into email templates + hub Settings'],
+  ['Setup','Outlook email signature'],
+  ['Setup','Connect Outlook ↔ Google Calendar'],
+  ['Setup','Connect Zoom to Recruiterflow (notetaker)'],
+  ['Setup','Recruiterflow Chrome extension — log in + sync'],
+  ['Setup','Fix SharePoint/OneDrive access with Tirzah'],
+  ['Setup','Sync OneDrive + watch SharePoint videos'],
+  ['Setup','OneDrive contacts onto my phone'],
+  ['Setup','ChatGPT Pro + Recruiterflow plugin (decide Copilot vs ChatGPT)'],
+  ['Setup','Make Shloime admin on any WhatsApp group I create'],
+  ['LinkedIn','Banner + connect profile to PTS'],
+  ['LinkedIn','Decide on LinkedIn Premium'],
+  ['LinkedIn','Agree my title with PTS (e.g. "Executive Recruiter")'],
+  ['Ask Shloime / Tirzah','Which roles / clients I own (property management? Emerald Empire?)'],
+  ['Ask Shloime / Tirzah','Nicer job pages + WhatsApp images'],
+  ['Ask Shloime / Tirzah','What "100–105K only there" means'],
+  ['Ask Shloime / Tirzah','Get added to team emails'],
+  ['Ask Shloime / Tirzah','"CRRC 7031 / 2027" — what is it?'],
+  ['Ask Shloime / Tirzah','Daily WhatsApp status OK? (handbook says max once a week)'],
+  ['Other','Watch Shloime\'s video'],
+  ['Other','Write down my fast process → add it to the hub'],
+  ['Other','Sign the handbook acknowledgement']
+];
+const RULES=['White-glove service; call, don\'t only text','Adjust to each person\'s type','Look at their photo; ask where they heard about us','Text "good luck" before every interview','Closing a job → tell Tirzah + Shloime, reply "Closed" in Job Posts','Don\'t fill "Date Screened" (Tirzah\'s screenings only)','Every day: LinkedIn connections (regional managers, management, recruiters) + message new connections'];
 const DEFAULT_TOOLS=[
   {name:'Recruiterflow',url:'https://recruiterflow.com/'},
   {name:'Outlook',url:'https://outlook.office.com/mail/'},
@@ -297,7 +324,7 @@ let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList
 async function copy(text){try{await navigator.clipboard.writeText(text);toast('Copied')}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Copied')}catch(_){toast('Copy failed — select and copy manually')}ta.remove()}}
 
 /* ---------- storage ---------- */
-function defaults(){return{candidates:[],jobs:[],interviews:[],tools:DEFAULT_TOOLS.slice(),templates:DEFAULT_TEMPLATES.map(t=>({...t})),settings:{me:'Miriam Stroh',zoom:''},notDup:[],lastBackup:0,last:null,planDone:{}}}
+function defaults(){return{candidates:[],jobs:[],interviews:[],tools:DEFAULT_TOOLS.slice(),templates:DEFAULT_TEMPLATES.map(t=>({...t})),settings:{me:'Miriam Stroh',zoom:''},onboard:DEFAULT_ONBOARD.map(([sec,text],i)=>({id:'o'+i,sec,text,done:false})),notDup:[],lastBackup:0,last:null,planDone:{}}}
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)return Object.assign(defaults(),s)}catch(e){}return defaults()}
 let state=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('Could not save — browser storage is blocked')}}
@@ -410,7 +437,8 @@ function jobOptions(sel,blank){return(blank?`<option value="">${blank}</option>`
 
 function renderTabs(){
   const n={today:toTriage().length+dueFollowups().length+dupPairs().length,cands:state.candidates.length,jobs:openJobs().length};
-  const T=[['today','Today',n.today],['cands','Candidates',0],['jobs','Searches',0],['tpl','Templates',0],['settings','Settings',0]];
+  const left=state.onboard.filter(o=>!o.done).length;
+  const T=[['today','Today',n.today],['onb','Onboarding',left],['cands','Candidates',0],['jobs','Searches',0],['tpl','Templates',0],['settings','Settings',0]];
   $('#tabs').innerHTML=T.map(([k,l,c])=>`<button class="tab${tab===k?' on':''}" data-a="tab" data-v="${k}">${l}${c?`<span class="n">${c}</span>`:''}</button>`).join('');
 }
 
@@ -550,6 +578,20 @@ function viewTpl(){
   <button class="btn ghost sm" style="margin-top:16px" data-a="tplReset">Reset templates to defaults</button>`;
 }
 
+function viewOnb(){
+  const all=state.onboard,done=all.filter(o=>o.done).length,pct=all.length?Math.round(done/all.length*100):0;
+  return `<section class="card" style="margin-top:16px">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Onboarding</h2><span class="muted">${done} of ${all.length} done</span></div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+  </section>
+  <div class="grid two">${ONB_SECTIONS.map(sec=>{const items=all.filter(o=>o.sec===sec);return `<section class="card"><h3>${esc(sec)}</h3>
+    ${items.map(o=>`<div class="row" style="flex-wrap:nowrap;align-items:flex-start"><label class="check" style="flex:1"><input type="checkbox" data-a="onbToggle" data-id="${o.id}"${o.done?' checked':''}><span${o.done?' style="text-decoration:line-through;color:var(--muted)"':''}>${esc(o.text)}</span></label><button class="btn sm ghost" style="padding:2px 8px" data-a="onbDel" data-id="${o.id}" aria-label="Remove">×</button></div>`).join('')||'<p class="empty">Nothing here.</p>'}
+    <div class="row" style="margin-top:8px;flex-wrap:nowrap"><input data-onb-new="${esc(sec)}" placeholder="Add an item…"><button class="btn sm" data-a="onbAdd" data-v="${esc(sec)}">Add</button></div>
+  </section>`}).join('')}
+  <section class="card"><h3>My rules with candidates</h3><ul style="padding-left:18px;font-size:.88rem;display:grid;gap:4px">${RULES.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></section>
+  </div>`;
+}
+
 function viewSettings(){
   return `<div class="grid two">
   <section class="card"><h2>About you</h2><div class="fields">
@@ -569,7 +611,7 @@ function viewSettings(){
 function render(){
   renderTabs();
   $('#dateLine').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
-  const v={today:viewToday,cands:viewCands,jobs:viewJobs,tpl:viewTpl,settings:viewSettings}[tab]();
+  const v={today:viewToday,onb:viewOnb,cands:viewCands,jobs:viewJobs,tpl:viewTpl,settings:viewSettings}[tab]();
   $('#main').innerHTML=v;
 }
 
@@ -596,6 +638,9 @@ document.addEventListener('click',e=>{
     case'merge':{const[x,y]=v.split('|');const A=state.candidates.find(c=>c.id===x),B=state.candidates.find(c=>c.id===y);if(A&&B){mergeCands(A,B);save();toast(`Merged into ${A.name}`);render()}break}
     case'notDup':state.notDup.push(v);save();render();break;
     case'triage':{const r=TRIAGE[v];cand.stage=r.stage;cand.next=r.next;cand.due=r.due==null?'':addDays(r.due);cand.updated=Date.now();touchLast('cand',cand.id,cand.name);save();if(r.tpl)copy(tplText(r.tpl));toast(r.msg);render();break}
+    case'onbToggle':{const o=state.onboard.find(o=>o.id===id);if(o){o.done=b.checked;save();render();if(!state.onboard.some(o=>!o.done))toast('Onboarding complete! 🎉')}break}
+    case'onbDel':{const o=state.onboard.find(o=>o.id===id);if(o&&confirm(`Remove "${o.text}"?`)){state.onboard=state.onboard.filter(x=>x.id!==id);save();render()}break}
+    case'onbAdd':{const inp=[...document.querySelectorAll('[data-onb-new]')].find(i=>i.dataset.onbNew===v);const t=inp&&inp.value.trim();if(!t){toast('Type the item first');break}state.onboard.push({id:uid(),sec:v,text:t,done:false});save();render();break}
     case'cf':candFilter=v;render();break;
     case'snooze':cand.due=addDays(+v);save();toast(`${cand.name} due ${cand.due}`);state.openCand=cand.id;render();break;
     case'delCand':if(confirm(`Delete ${cand.name} from your hub? (Not from Recruiterflow.)`)){state.candidates=state.candidates.filter(c=>c.id!==id);save();render()}break;
