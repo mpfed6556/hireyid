@@ -164,7 +164,10 @@ $('#lockForm').addEventListener('submit',async e=>{e.preventDefault();const er=$
 function viewToday(){
   if(st.day!==today()){st.day=today();st.done={};save()}
   const n=STEPS.filter(s=>st.done[s.id]).length;
-  return `<div class="progress"><div class="txt"><span>${n===STEPS.length?'All done for today 🎉':'Today\'s steps'}</span><span>${n} of ${STEPS.length}</span></div><div class="bar"><i style="width:${n/STEPS.length*100}%"></i></div></div>
+  return `<div class="progress" style="border-color:var(--accent)"><div class="txt"><span>Daily run with Claude</span></div>
+    <div class="tip" style="margin-bottom:10px">1. Open your work tabs in Chrome. 2. Open Claude in Chrome. 3. Paste this. Claude lists what came in, merges repeats, suggests actions, and does nothing until you confirm.</div>
+    <button class="btn primary" data-a="copyRun">Copy my daily run</button></div>
+  <div class="progress"><div class="txt"><span>${n===STEPS.length?'All done for today 🎉':'Today\'s steps'}</span><span>${n} of ${STEPS.length}</span></div><div class="bar"><i style="width:${n/STEPS.length*100}%"></i></div></div>
   ${STEPS.map((s,i)=>{const d=st.done[s.id];return `<div class="step${d?' done':''}"><div class="num">${d?'✓':i+1}</div><div class="body"><div class="title">${esc(s.t)}</div><div class="tip">${esc(s.tip)}</div>${d?`<div class="when">Done at ${time(d)}</div>`:''}
     <div class="acts">${s.apps.map(k=>`<a class="btn small" href="${esc(app(k).url)}" target="_blank" rel="noopener">Open ${esc(app(k).name)}</a>`).join('')}${d?`<button class="btn small ghost" data-a="undo" data-v="${s.id}">Undo</button>`:`<button class="btn small primary" data-a="ask" data-v="${s.id}">Done</button>`}</div></div></div>`}).join('')}
   <div class="apps"><h2>All my apps</h2>${Object.keys(DEFAULT_APPS).map(k=>`<a href="${esc(app(k).url)}" target="_blank" rel="noopener">${esc(app(k).name)}</a>`).join('')}</div>
@@ -180,11 +183,32 @@ function render(){
   $('#date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
   $('#main').innerHTML=tab==='today'?viewToday():viewOnb();
 }
+const RUN=`DAILY RUN — Pro Talent Solutions recruiting
+You are my recruiting assistant. Work only in my open tabs: Outlook, Recruiterflow, WhatsApp Web, Google Calendar, Zoom Scheduler, LinkedIn.
+
+STEP 1 — GATHER (read only). List everything new since my last run (or since yesterday 5pm): new applicants and tasks due in Recruiterflow, new emails in Outlook, unread WhatsApp chats, today's calls on my calendar, LinkedIn messages and connection requests.
+
+STEP 2 — MERGE. Group items about the same person across apps (match by name, email or phone) into ONE row, and show every app they appeared in. Check whether each person already has a Recruiterflow profile.
+
+STEP 3 — PROPOSE. Give me a numbered table: # · person · apps seen · what came in · proposed action · draft message. Follow PTS rules:
+- Strong fit → outreach email with my Zoom Scheduler link: [PASTE LINK]
+- Unsure → tag @Tirzah in Recruiterflow for an intake
+- Not a fit → disqualify from that job only. If I already spoke to them: move to Sourced first and send a personal note instead of the automatic rejection
+- Not in Recruiterflow yet → add them (check location, contact details, experience)
+- Call today → "good luck" text before an interview
+- Follow-ups due → draft the follow-up
+
+STEP 4 — WAIT. Do nothing yet. I will reply with edits, e.g. "3: tag Tirzah instead", "skip 5", "change the draft for 2 to…".
+
+STEP 5 — ACT ONLY AFTER I TYPE "CONFIRM". Then do the confirmed items one at a time and tell me when each is done. Ask me if anything is unclear.
+
+Rules: never send, disqualify or delete anything I have not confirmed. On LinkedIn, only read and draft — I will press send myself. Never copy candidate or client information anywhere outside these apps.`;
 function ask(title,text,fn){pending=fn;$('#mTitle').textContent=title;$('#mText').textContent=text;$('#modal').hidden=false}
 
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,v=b.dataset.v;
-  if(a==='tab'){tab=v;render()}
+  if(a==='copyRun'){navigator.clipboard.writeText(RUN).then(()=>{b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy my daily run',2000)},()=>{const t=document.createElement('textarea');t.value=RUN;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();b.textContent='Copied ✓'})}
+  else if(a==='tab'){tab=v;render()}
   else if(a==='lock'){try{localStorage.removeItem(AUTH);sessionStorage.removeItem(AUTH)}catch(x){}$('#app').hidden=true;$('#lock').hidden=false;$('#pw').value=''}
   else if(a==='ask'){const s=STEPS.find(s=>s.id===v);ask('Did you finish this?',s.t,()=>{st.done[v]=Date.now()})}
   else if(a==='undo'){delete st.done[v];save();render()}
