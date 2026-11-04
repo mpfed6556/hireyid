@@ -116,28 +116,28 @@ const STEPS=[
   {id:'connect',t:'LinkedIn: connect with 10 people',tip:'Regional managers, management, recruiters — message new connections',apps:['li']}
 ];
 const ONB=[
-  ['Setup','Set Zoom Scheduler availability (from 10am) → get booking link'],
-  ['Setup','Add booking link to email templates + signature'],
-  ['Setup','Outlook email signature'],
-  ['Setup','Connect Outlook ↔ Google Calendar'],
-  ['Setup','Connect Zoom to Recruiterflow (notetaker)'],
-  ['Setup','Recruiterflow Chrome extension — log in + sync'],
-  ['Setup','Fix SharePoint/OneDrive access with Tirzah'],
-  ['Setup','Sync OneDrive + watch SharePoint videos'],
-  ['Setup','OneDrive contacts onto my phone'],
-  ['Setup','ChatGPT Pro + Recruiterflow plugin'],
-  ['Setup','Make Shloime admin on any WhatsApp group I create'],
-  ['LinkedIn','Banner + connect profile to PTS'],
-  ['LinkedIn','Decide on LinkedIn Premium'],
-  ['LinkedIn','Agree my title with PTS'],
-  ['Ask Shloime / Tirzah','Which roles / clients I own'],
-  ['Ask Shloime / Tirzah','Nicer job pages + WhatsApp images'],
-  ['Ask Shloime / Tirzah','What "100–105K only there" means'],
-  ['Ask Shloime / Tirzah','Get added to team emails'],
-  ['Ask Shloime / Tirzah','"CRRC 7031 / 2027" — what is it?'],
-  ['Ask Shloime / Tirzah','Daily WhatsApp status OK? (handbook: once a week)'],
-  ['Other','Watch Shloime\'s video'],
-  ['Other','Sign the handbook acknowledgement']
+  ['Setup','Set Zoom Scheduler availability (from 10am) → get booking link','Open Zoom Scheduler → your schedule → Availability → Mon–Fri from 10:00, check time zone → Save → Copy link.','https://scheduler.zoom.us/'],
+  ['Setup','Add booking link to email templates + signature','Recruiterflow → Settings → Templates → Email templates → Clone → replace the Calendly link with your Zoom link → leave "shared" unticked → Save.','https://recruiterflow.com/'],
+  ['Setup','Outlook email signature','Outlook → ⚙ Settings (top right) → Account → Signatures → New: name, title, Pro Talent Solutions, phone, booking link → set as default → Save.','https://outlook.office.com/mail/'],
+  ['Setup','Connect Outlook ↔ Google Calendar','Outlook ⚙ → Calendar → Shared calendars → Publish a calendar → "Can view all details" → Publish → copy the ICS link. Google Calendar → Other calendars + → From URL → paste → Add. Blocked? Ask Tirzah.','https://outlook.office.com/calendar/'],
+  ['Setup','Connect Zoom to Recruiterflow (notetaker)','Recruiterflow → Settings → Integrations → Zoom → Connect → sign in with your work Zoom → Allow. Can\'t find it? Ask Tirzah.','https://recruiterflow.com/'],
+  ['Setup','Recruiterflow Chrome extension — log in + sync','Chrome Web Store → search "Recruiterflow" → Add to Chrome → pin it (puzzle icon) → click it → log in with work email → test on a LinkedIn profile.','https://chromewebstore.google.com/search/recruiterflow'],
+  ['Setup','Fix SharePoint/OneDrive access with Tirzah','Outlook → 9 dots (top left) → SharePoint → open the PTS site → Documents. Only see "Company share"? Screenshot it to Tirzah.','https://www.office.com/launch/sharepoint'],
+  ['Setup','Sync OneDrive + watch SharePoint videos','PTS SharePoint → Documents → "Sync" (or "Add shortcut to My files") → sign in to the OneDrive app → watch the videos Tirzah points you to.','https://www.office.com/launch/sharepoint'],
+  ['Setup','OneDrive contacts onto my phone','Phone: install Outlook app → sign in with work email → Settings → your account → turn on Sync/Save contacts.','https://www.microsoft.com/microsoft-365/outlook/mobile-email-app'],
+  ['Setup','ChatGPT Pro + Recruiterflow plugin','ChatGPT (ask Tirzah which account) → Settings → Apps → search "Recruiterflow" → Connect → log in with work email → test: type @Recruiterflow + a search.','https://chatgpt.com/'],
+  ['Setup','Make Shloime admin on any WhatsApp group I create','WhatsApp → open the group → tap the group name → tap Shloime → "Make group admin".','https://web.whatsapp.com/'],
+  ['LinkedIn','Banner + connect profile to PTS','Canva → "LinkedIn banner" → design → download. LinkedIn → your profile → pencil on banner → upload. Then Add section → Position → pick the Pro Talent Solutions company page → Save.','https://www.linkedin.com/in/me/'],
+  ['LinkedIn','Decide on LinkedIn Premium','Compare plans on the Premium page → ask Shloime if PTS pays before you buy.','https://www.linkedin.com/premium/'],
+  ['LinkedIn','Agree my title with PTS','Ask Shloime: "Is \'Executive Recruiter\' OK for LinkedIn and my signature?" → use it in both.',''],
+  ['Ask Shloime / Tirzah','Which roles / clients I own','Ask Shloime at your one-on-one: "Which roles and clients are mine — property management, Emerald Empire?"',''],
+  ['Ask Shloime / Tirzah','Nicer job pages + WhatsApp images','Show Shloime 1–2 examples of what you\'d change → ask if you can update them.',''],
+  ['Ask Shloime / Tirzah','What "100–105K only there" means','Ask Shloime or Tirzah what this note refers to → write the answer here.',''],
+  ['Ask Shloime / Tirzah','Get added to team emails','Ask Tirzah: "Can you add me to the team email list?"',''],
+  ['Ask Shloime / Tirzah','"CRRC 7031 / 2027" — what is it?','Ask Shloime or Tirzah → write the answer here.',''],
+  ['Ask Shloime / Tirzah','Daily WhatsApp status OK? (handbook: once a week)','Ask Tirzah: "Can I post to my status daily if it\'s a different job each day?"',''],
+  ['Other','Watch Shloime\'s video','Ask Shloime for the link → watch → jot down 3 takeaways.',''],
+  ['Other','Sign the handbook acknowledgement','Handbook PDF → last page (p. 22) → sign (print, or Adobe "Fill & Sign") → send to Tirzah.','https://ptshandbook.lovable.app/']
 ];
 
 const $=s=>document.querySelector(s);
@@ -176,7 +176,7 @@ function viewToday(){
 function viewOnb(){
   const n=Object.keys(st.onb).length;let sec='';
   return `<div class="progress"><div class="txt"><span>Onboarding</span><span>${n} of ${ONB.length}</span></div><div class="bar"><i style="width:${n/ONB.length*100}%"></i></div></div>
-  ${ONB.map(([s,t],i)=>{const d=st.onb[i];const h=s!==sec?`<div class="sec">${esc(sec=s)}</div>`:'';return h+`<div class="step${d?' done':''}"><div class="num">${d?'✓':''}</div><div class="body"><div class="title">${esc(t)}</div>${d?`<div class="when">Done ${new Date(d).toLocaleDateString()}</div>`:''}</div>${d?`<button class="btn small ghost" data-a="onbUndo" data-v="${i}">Undo</button>`:`<button class="btn small primary" data-a="onbAsk" data-v="${i}">Done</button>`}</div>`}).join('')}`;
+  ${ONB.map(([s,t,how,url],i)=>{const d=st.onb[i];const h=s!==sec?`<div class="sec">${esc(sec=s)}</div>`:'';return h+`<div class="step${d?' done':''}"><div class="num">${d?'✓':''}</div><div class="body"><div class="title">${esc(t)}</div>${how?`<div class="tip">${esc(how)}</div>`:''}${d?`<div class="when">Done ${new Date(d).toLocaleDateString()}</div>`:''}${url?`<div class="acts"><a class="btn small" href="${esc(url)}" target="_blank" rel="noopener">Go →</a></div>`:''}</div>${d?`<button class="btn small ghost" data-a="onbUndo" data-v="${i}">Undo</button>`:`<button class="btn small primary" data-a="onbAsk" data-v="${i}">Done</button>`}</div>`}).join('')}`;
 }
 function render(){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===tab));
