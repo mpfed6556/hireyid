@@ -59,6 +59,42 @@ details.edit summary{cursor:pointer}
 #lock .err{color:#C94848;font-size:.88rem;min-height:1.2em}
 #lock label{display:flex;gap:8px;justify-content:center;align-items:center;font-size:.88rem;color:var(--soft)}
 #lock label input{width:auto}
+.wrap{max-width:1040px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card h2{font-size:1.25rem;margin-bottom:8px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.filters button{border:1.5px solid var(--line);background:var(--card);border-radius:20px;padding:5px 12px;font-size:.82rem;cursor:pointer}
+.filters button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table.chart{border-collapse:separate;border-spacing:0;min-width:920px;width:100%;font-size:.86rem}
+.chart th{background:var(--sand);text-align:left;padding:8px;font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;color:var(--soft);white-space:nowrap}
+.chart td{padding:7px 8px;border-top:1px solid var(--line);vertical-align:middle}
+.chart .p{position:sticky;left:0;background:var(--card);z-index:1;min-width:160px;box-shadow:1px 0 0 var(--line)}
+.chart th.p{background:var(--sand);z-index:2}
+.chart tr.hot td{background:#FFF8EC}.chart tr.hot td.p{background:#FFF8EC}
+@media (prefers-color-scheme: dark){.chart tr.hot td,.chart tr.hot td.p{background:#2E271C}}
+.chart select,.chart input{padding:5px 6px;font-size:.8rem;border-radius:8px}
+.chart input[type=date]{width:128px}.chart input[type=datetime-local]{width:170px}
+.nm{font-weight:700}.sub{color:var(--muted);font-size:.76rem}
+.chip{display:inline-block;font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px;background:var(--sand);color:var(--soft);margin:1px 2px 1px 0}
+.chip.cl{background:#EDF3FB;color:#3E7BC4}.chip.ca{background:#F6EADE;color:#AB5E38}.chip.x2{background:#FBF3E1;color:#B7862A}
+.tick{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-weight:700;color:var(--muted)}
+.tick.on{background:var(--green);border-color:var(--green);color:#fff}
+.over{color:#C94848!important;font-weight:700}
+.addbox{display:grid;gap:8px;grid-template-columns:1fr;margin-top:10px}
+@media(min-width:700px){.addbox{grid-template-columns:repeat(3,1fr)}.addbox .full{grid-column:1/-1}}
+.addbox label,.sheet label{font-size:.76rem;font-weight:600;color:var(--soft);display:block;margin-bottom:3px}
+textarea{font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;min-height:44px;resize:vertical}
+.seg{display:flex;gap:6px}.seg button{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:8px;font-weight:600;cursor:pointer}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.sheet .q{margin-bottom:10px}
+.sheet .qh{font-weight:700;margin:16px 0 8px;color:var(--accent)}
+.actgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.actgrid button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px;font-weight:600;cursor:pointer;text-align:left;font-size:.86rem}
+.actgrid button.on{border-color:var(--accent);background:#F6EADE;color:#AB5E38}
+.panel{border:1.5px solid var(--accent);border-radius:12px;padding:12px;margin-top:12px}
+.panel textarea{min-height:200px;font-size:.88rem}
+.cols{display:grid;gap:14px}@media(min-width:900px){.cols{grid-template-columns:1.1fr .9fr}.sticky{position:sticky;top:12px;align-self:start}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -84,7 +120,7 @@ details.edit summary{cursor:pointer}
   </div>
 </div>
 
-<div id="modal" class="modal" hidden><div class="box"><h2 id="mTitle"></h2><p id="mText"></p><div class="acts"><button class="btn ghost" data-a="mNo">Not yet</button><button class="btn good" data-a="mYes">Yes, done ✓</button></div></div></div>
+<div id="modal" class="modal" hidden><div class="box"><h2 id="mTitle"></h2><p id="mText"></p><div class="acts"><button class="btn ghost" data-a="mNo" id="mNoB">Not yet</button><button class="btn good" data-a="mYes" id="mYesB">Yes, done ✓</button></div></div></div>
 
 <script>
 (function(){
@@ -104,13 +140,6 @@ const DEFAULT_APPS={
   sp:{name:'SharePoint',url:'https://www.office.com/launch/sharepoint'}
 };
 const STEPS=[
-  {id:'apps',t:'Check new applicants',tip:'Strong fit → message them · Unsure → tag Tirzah · Not a fit → disqualify',apps:['rf']},
-  {id:'mail',t:'Check email',tip:'Reply to candidates and clients',apps:['outlook']},
-  {id:'wa',t:'Check WhatsApp',tip:'New messages and resumes — add any new candidates to Recruiterflow',apps:['wa']},
-  {id:'cal',t:'Look at today\'s calls',tip:'Text "good luck" before every interview',apps:['cal','zoom']},
-  {id:'calls',t:'Do screenings & interviews',tip:'Use the Intake / Interview note template in Recruiterflow',apps:['rf']},
-  {id:'notes',t:'Update Recruiterflow after calls',tip:'Notes, tags, custom fields, move the stage',apps:['rf']},
-  {id:'fu',t:'Follow-ups',tip:'Recruiterflow → Tasks → what\'s due or overdue',apps:['rf']},
   {id:'search',t:'Search for candidates',tip:'ChatGPT plugin + advanced search, then LinkedIn',apps:['gpt','li']},
   {id:'post',t:'Post a job',tip:'WhatsApp status (once a week per job) and LinkedIn',apps:['wa','li']},
   {id:'connect',t:'LinkedIn: connect with 10 people',tip:'Regional managers, management, recruiters — message new connections',apps:['li']}
@@ -149,7 +178,7 @@ function load(){
   let s=null;try{s=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
   if(!s){s={apps:{},day:'',done:{},onb:{}};
     try{const old=JSON.parse(localStorage.getItem('mphub.v1')||'null');if(old&&old.onboard)old.onboard.forEach(o=>{if(o.done){const i=ONB.findIndex(x=>x[1].slice(0,20)===o.text.slice(0,20));if(i>=0)s.onb[i]=Date.now()}})}catch(e){}}
-  s.apps=s.apps||{};s.done=s.done||{};s.onb=s.onb||{};
+  s.apps=s.apps||{};s.done=s.done||{};s.onb=s.onb||{};s.people=s.people||[];s.notDup=s.notDup||[];
   if(s.day!==today()){s.day=today();s.done={}}
   return s;
 }
@@ -161,12 +190,216 @@ async function derive(pw){const enc=new TextEncoder();const k=await crypto.subtl
 function authed(){try{const a=JSON.parse(localStorage.getItem(AUTH)||sessionStorage.getItem(AUTH)||'null');return a&&a.h===PW_HASH&&a.exp>Date.now()}catch(e){return false}}
 $('#lockForm').addEventListener('submit',async e=>{e.preventDefault();const er=$('#lockErr');er.textContent='Checking…';try{if(await derive($('#pw').value)===PW_HASH){const r=$('#remember').checked;try{(r?localStorage:sessionStorage).setItem(AUTH,JSON.stringify({h:PW_HASH,exp:Date.now()+(r?30:1)*864e5}))}catch(x){}er.textContent='';start()}else er.textContent='That password is not right.'}catch(x){er.textContent='This browser cannot check the password.'}});
 
+/* ================= PEOPLE CHART ================= */
+const FROM=['Recruiterflow','Email','WhatsApp','Indeed','LinkedIn','Referral','Phone'];
+const STATUS={cand:['New','Strong fit','Tag Tirzah','Back burner','Not a fit','Submitted','Hired'],client:['New lead','Intake done','Job open','On hold','Closed']};
+const CLIENT_Q=[
+ ['h','About him'],
+ ['c1','Company — what does it do? Size? Locations?'],
+ ['c2','His role — is he the decision maker? Who else is involved?'],
+ ['c3','Worked with recruiters before? How did it go?'],
+ ['c4','Best way and times to reach him'],
+ ['h','About the position'],
+ ['p1','Job title & level — new role or replacement? Why is it open?'],
+ ['p2','Location · on-site / hybrid / remote · schedule'],
+ ['p3','Salary range & benefits'],
+ ['p4','Must-haves (experience, skills, certifications)'],
+ ['p5','Nice-to-haves'],
+ ['p6','Reports to · team size'],
+ ['p7','What does success look like in year one?'],
+ ['p8','Deal-breakers'],
+ ['p9','Interview process & timeline — who interviews, how soon?'],
+ ['p10','Culture — who thrives there?'],
+ ['p11','Commute radius to search']
+];
+const SCREEN_Q=[
+ ['h','Screening'],
+ ['s_loc','Location'],['s_ad','(If applied) Where did you see our ad?'],['s_cur','Where are you currently working?'],['s_do','In short, what do you do?'],
+ ['s_why','Why are you looking for a new position?'],['s_next','What are you looking to do going forward?'],['s_sal','Current / last salary'],['s_exp','Salary expectations'],
+ ['s_rec','Working with other recruiters?'],['s_sched','Schedule needs (LM hours, flexible hours)'],['s_comm','Community & social fit (notes)'],['s_ref','References'],['s_gen','General thoughts']
+];
+const INTERVIEW_Q=[
+ ['h','Interview'],
+ ['i_loc','Location'],['i_why','Why are you looking for a new position?'],['i_gap','(Not working 6+ months) What have you been doing since?'],['i_int','Why are you interested in this job?'],
+ ['i_skills','Skills from the job description / years of experience — what qualifies you?'],['i_next','What are you looking for in your next opportunity?'],['i_sal','Current / last salary'],['i_exp','Salary expectations'],
+ ['i_35','Where do you see yourself in 3–5 years?'],['i_str','Biggest strength'],['i_weak','What wouldn\'t be a good fit for you?'],['i_chal','Greatest challenge in this position?'],
+ ['i_prob','Greatest problem you solved?'],['i_like','How did you like your other jobs?'],['i_acc','Greatest accomplishment?'],['i_imp','Impact on your last employer?'],
+ ['i_rec','Working with other recruiters?'],['i_off','Offers on the table? Other interviews?'],['i_reloc','Relocation — willing? ties? family?'],
+ ['i_sched','Schedule needs (LM hours, flexible hours)'],['i_comm','Community & social fit (notes)'],['i_ref','References'],['i_qs','Their questions for me'],['i_gen','General thoughts']
+];
+const ACTIONS={
+ client:[['missed','“Missed you” message'],['text','Text him'],['incoming','Find his messages'],['summary','Role summary to send him'],['report','Full report (coordinator)'],['rf','Recruiterflow job fields'],['posts','Job posts (WhatsApp + LinkedIn)'],['team','Tell the team'],['page','Show him the job page'],['ai','Make it nicer with AI'],['pic','Check his picture'],['rec','Call recording & transcript']],
+ cand:[['missed','“Missed you” message'],['luck','“Good luck” text'],['text','Text them'],['incoming','Find their messages'],['report','Full report (RF note)'],['submit','Submission email'],['rf','Recruiterflow fields'],['match','Match to open jobs'],['pic','Check their picture'],['rec','Call recording & transcript']]
+};
+
+const normEmail=e=>String(e||'').trim().toLowerCase();
+const normPhone=p=>{const d=String(p||'').replace(/\D/g,'');return d.length>=10?d.slice(-10):''};
+const normName=n=>String(n||'').toLowerCase().replace(/[^a-z֐-׿\s]/g,' ').split(/\s+/).filter(Boolean).sort().join(' ');
+function lev(a,b){if(Math.abs(a.length-b.length)>2)return 9;let p=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[b.length]}
+function extract(t){t=String(t||'');return{email:(t.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)||[''])[0],phone:((t.match(/\+?\d[\d\s().-]{8,}\d/g)||[]).map(normPhone).find(Boolean))||''}}
+function guessName(t){for(let l of String(t||'').split('\n')){l=l.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,'').replace(/\+?\d[\d\s().-]{8,}\d/g,'').replace(/^(from|name)\s*:\s*/i,'').replace(/[<>|,;:]+/g,' ').trim();if(l&&/^[\p{L}'.\- ]{3,40}$/u.test(l)&&l.split(/\s+/).length<=4)return l}return''}
+function sameAs(a,b){
+  if(normEmail(a.email)&&normEmail(a.email)===normEmail(b.email))return 'sure';
+  if(normPhone(a.phone)&&normPhone(a.phone)===normPhone(b.phone))return 'sure';
+  const x=normName(a.name),y=normName(b.name);
+  if(x&&y&&(x===y||(Math.min(x.length,y.length)>=8&&lev(x,y)<=2)))return 'maybe';
+  return '';
+}
+function mergeInto(keep,o){
+  ['phone','email','company'].forEach(k=>{if(!keep[k]&&o[k])keep[k]=o[k]});
+  if((o.name||'').length>(keep.name||'').length)keep.name=o.name;
+  keep.from=[...new Set((keep.from||[]).concat(o.from||[]))];
+  keep.hits=(keep.hits||1)+(o.hits||1);
+  if(o.ans)Object.keys(o.ans).forEach(k=>{if(!keep.ans[k])keep.ans[k]=o.ans[k]});
+  if(o.notes)keep.notes=(keep.notes?keep.notes+'\n':'')+o.notes;
+  ['met','rf'].forEach(k=>{if(!keep[k]&&o[k])keep[k]=o[k]});
+  if(!keep.call&&o.call)keep.call=o.call;if(!keep.fu&&o.fu)keep.fu=o.fu;
+}
+const isToday=ts=>ts&&new Date(ts).toDateString()===new Date().toDateString();
+const first=n=>String(n||'').trim().split(/\s+/)[0]||'there';
+const me=()=>st.me||'Miriam';
+const zoomLink=()=>st.zoom||'[your Zoom Scheduler link]';
+let filter='all',openId=null,panel=null,addType='cand';
+const P=id=>st.people.find(p=>p.id===id);
+
+function dupPairs(){
+  const out=[];const L=st.people;
+  for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){const k=[L[i].id,L[j].id].sort().join('|');if(st.notDup.includes(k))continue;const s=sameAs(L[i],L[j]);if(s)out.push({a:L[i],b:L[j],s,k})}
+  return out;
+}
+function rowHot(p){return (p.fu&&p.fu<=today())||(p.call&&p.call.slice(0,10)===today())||p.status==='New'||p.status==='New lead'}
+function viewChart(){
+  let L=st.people.slice();
+  if(filter==='cand')L=L.filter(p=>p.type==='cand');
+  if(filter==='client')L=L.filter(p=>p.type==='client');
+  if(filter==='hot')L=L.filter(rowHot);
+  L.sort((a,b)=>(rowHot(b)-rowHot(a))||((a.fu||'9')<(b.fu||'9')?-1:1));
+  const dups=dupPairs();
+  return `<div class="card"><div class="txt" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h2 style="margin:0">My people</h2><button class="btn small primary" data-a="addToggle">+ Add person</button></div>
+  ${st.adding?viewAdd():''}
+  ${dups.length?`<div class="tip" style="background:#FBF3E1;color:#B7862A;border-radius:10px;padding:8px 10px;margin:10px 0">Possible double: <b>${esc(dups[0].a.name)}</b> & <b>${esc(dups[0].b.name)}</b> (${dups[0].s==='sure'?'same phone/email':'similar name'}). <button class="btn small" data-a="dupReview" data-v="${dups[0].k}">Review</button>${dups.length>1?` +${dups.length-1} more`:''}</div>`:''}
+  <div class="filters">${[['all','All'],['hot','Needs action'],['cand','Candidates'],['client','Clients']].map(([k,l])=>`<button class="${filter===k?'on':''}" data-a="filter" data-v="${k}">${l}</button>`).join('')}</div>
+  ${L.length?`<div class="tblwrap"><table class="chart"><thead><tr><th class="p">Person</th><th>Came from</th><th>Status</th><th>Email</th><th>WhatsApp</th><th>Call</th><th>Screen / interview</th><th>RF updated</th><th>Follow-up</th><th></th></tr></thead><tbody>
+  ${L.map(p=>{const over=p.fu&&p.fu<today();return `<tr class="${rowHot(p)?'hot':''}">
+    <td class="p"><div class="nm">${esc(p.name)}</div><div><span class="chip ${p.type==='client'?'cl':'ca'}">${p.type==='client'?'Client':'Candidate'}</span>${(p.hits||1)>1?`<span class="chip x2">seen ${p.hits}×</span>`:''}</div>${p.company?`<div class="sub">${esc(p.company)}</div>`:''}</td>
+    <td>${(p.from||[]).map(f=>`<span class="chip">${esc(f)}</span>`).join('')||'<span class="sub">—</span>'}</td>
+    <td><select data-pf="status" data-id="${p.id}">${STATUS[p.type].map(s=>`<option${s===p.status?' selected':''}>${s}</option>`).join('')}</select></td>
+    <td>${tick(p,'repEmail','Replied by email today')}</td>
+    <td>${tick(p,'repWa','Replied on WhatsApp today')}</td>
+    <td><input type="datetime-local" data-pf="call" data-id="${p.id}" value="${esc(p.call||'')}"></td>
+    <td>${tick(p,'met',p.type==='client'?'Intake call done':'Screening / interview done')}</td>
+    <td>${tick(p,'rf','Recruiterflow updated (notes, tags, fields, stage)')}</td>
+    <td><input type="date" class="${over?'over':''}" data-pf="fu" data-id="${p.id}" value="${esc(p.fu||'')}"></td>
+    <td><button class="btn small primary" data-a="open" data-id="${p.id}">Open ›</button></td></tr>`}).join('')}
+  </tbody></table></div><p class="sub" style="margin-top:6px">Highlighted = needs action today. Email/WhatsApp ticks reset each day. Swipe sideways on your phone.</p>`:'<p class="tip">No one here yet. Tap “+ Add person”.</p>'}
+  </div>`;
+}
+function tick(p,k,label){const daily=k==='repEmail'||k==='repWa';const v=p[k];const on=daily?isToday(v):!!v;return `<button class="tick${on?' on':''}" title="${esc(label)}" data-a="tick" data-v="${k}" data-id="${p.id}">${on?'✓':''}</button>${!on&&v?`<div class="sub">${new Date(v).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</div>`:''}`}
+function viewAdd(){
+  return `<div class="addbox">
+    <div class="full seg"><button class="${addType==='cand'?'on':''}" data-a="addType" data-v="cand">Candidate</button><button class="${addType==='client'?'on':''}" data-a="addType" data-v="client">Client</button></div>
+    <div><label>Name</label><input id="aName"></div>
+    <div><label>Phone</label><input id="aPhone" inputmode="tel"></div>
+    <div><label>Email</label><input id="aEmail" inputmode="email"></div>
+    <div><label>${addType==='client'?'Company':'Job / role'}</label><input id="aCo"></div>
+    <div><label>Came from</label><select id="aFrom" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--line);background:var(--card)">${FROM.map(f=>`<option>${f}</option>`).join('')}</select></div>
+    <div class="full"><label>Or paste their message / email (phone & email are picked up)</label><textarea id="aPaste"></textarea></div>
+    <div class="full"><button class="btn primary" data-a="addSave">Add to chart</button></div></div>`;
+}
+
+/* ---------- call sheet ---------- */
+function qset(p){return p.type==='client'?CLIENT_Q:(p.mode==='interview'?INTERVIEW_Q:SCREEN_Q)}
+function viewSheet(){
+  const p=P(openId);if(!p){openId=null;return viewToday()}
+  const Q=qset(p);
+  return `<button class="btn small ghost" data-a="close" style="margin-bottom:12px">‹ Back to chart</button>
+  <div class="cols sheet"><div>
+    <div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h2 style="margin:0">${esc(p.name)}</h2><span class="chip ${p.type==='client'?'cl':'ca'}">${p.type==='client'?'Client':'Candidate'}</span></div>
+      <div class="addbox">
+        <div><label>Name</label><input data-pf="name" data-id="${p.id}" value="${esc(p.name)}"></div>
+        <div><label>Phone</label><input data-pf="phone" data-id="${p.id}" value="${esc(p.phone)}"></div>
+        <div><label>Email</label><input data-pf="email" data-id="${p.id}" value="${esc(p.email)}"></div>
+        <div class="full"><label>${p.type==='client'?'Company':'Job / role'}</label><input data-pf="company" data-id="${p.id}" value="${esc(p.company)}"></div>
+      </div>
+      ${p.type==='cand'?`<div class="seg" style="margin-top:12px"><button class="${p.mode!=='interview'?'on':''}" data-a="mode" data-v="screen" data-id="${p.id}">Screening</button><button class="${p.mode==='interview'?'on':''}" data-a="mode" data-v="interview" data-id="${p.id}">Interview</button></div>`:''}
+    </div>
+    <div class="card">${Q.map(([id,q])=>id==='h'?`<div class="qh">${esc(q)}</div>`:`<div class="q"><label>${esc(q)}</label><textarea rows="1" data-q="${id}" data-id="${p.id}">${esc(p.ans[id]||'')}</textarea></div>`).join('')}</div>
+  </div>
+  <div class="sticky"><div class="card"><h2>Actions</h2><p class="tip" style="margin-bottom:10px">Tap one → I write it → you edit → you confirm by pressing send.</p>
+    <div class="actgrid">${ACTIONS[p.type].map(([k,l])=>`<button class="${panel&&panel.k===k?'on':''}" data-a="act" data-v="${k}">${esc(l)}</button>`).join('')}</div>
+    ${panel?viewPanel(p):''}
+  </div></div></div>`;
+}
+function viewPanel(p){
+  const s=panel.send||[];
+  return `<div class="panel"><div class="title" style="margin-bottom:6px">${esc(panel.title)}</div>${panel.note?`<div class="tip" style="margin-bottom:8px">${esc(panel.note)}</div>`:''}
+  ${panel.text!=null?`<textarea id="panelText">${esc(panel.text)}</textarea>`:''}
+  <div class="acts">${panel.text!=null?`<button class="btn small" data-a="pCopy">Copy</button>`:''}
+  ${s.includes('wa')?`<button class="btn small good" data-a="pSend" data-v="wa">WhatsApp…</button>`:''}
+  ${s.includes('sms')?`<button class="btn small good" data-a="pSend" data-v="sms">Text…</button>`:''}
+  ${s.includes('mail')?`<button class="btn small good" data-a="pSend" data-v="mail">Email…</button>`:''}
+  ${(panel.links||[]).map(([l,u])=>`<a class="btn small" href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}</a>`).join('')}
+  ${panel.k==='page'?`<button class="btn small good" data-a="pPage">Open job page</button>`:''}</div></div>`;
+}
+const A=(p,...ids)=>{for(const i of ids){const v=(p.ans[i]||'').trim();if(v)return v}return''};
+function qa(p){return qset(p).filter(([i])=>i!=='h').map(([i,q])=>p.ans[i]?`${q}\n→ ${p.ans[i].trim()}`:'').filter(Boolean).join('\n\n')}
+function waNum(p){const d=String(p.phone||'').replace(/\D/g,'');return d.length===10?'1'+d:d}
+function bullets(t){return String(t||'').split(/\n|;|•/).map(x=>x.trim()).filter(Boolean)}
+function buildPanel(p,k){
+  const isC=p.type==='client',fn=first(p.name),title=A(p,'p1')||p.company,loc=A(p,'p2'),sal=A(p,'p3');
+  const msg=['wa','sms','mail'];
+  switch(k){
+   case'missed':return{title:'“Missed you” message',text:isC?`Hi ${fn}, sorry I missed you! This is ${me()} from Pro Talent Solutions. When is a good time to reconnect? You can also grab a time here: ${zoomLink()}`:`Hi ${fn}, sorry I missed your call! This is ${me()} from Pro Talent Solutions. Please grab a time that works for you here: ${zoomLink()}`,send:msg};
+   case'luck':return{title:'“Good luck” text',text:`Hi ${fn}, good luck at your interview today! You've got this. Let me know how it goes. — ${me()}`,send:['wa','sms']};
+   case'text':return{title:isC?'Text him':'Text them',text:`Hi ${fn}, `,send:msg};
+   case'incoming':return{title:'Find their messages',note:`Look for anything new from ${p.name}. ${p.email?'Their email is copied when you tap Copy — paste it into Outlook search.':''}`,text:p.email||p.phone||p.name,links:[['Open WhatsApp chat',p.phone?`https://wa.me/${waNum(p)}`:'https://web.whatsapp.com/'],['Open Outlook',app('outlook').url]]};
+   case'summary':return{title:'Role summary to send him',text:`Hi ${fn}, thank you for the time today. Here's my understanding of the role so we're aligned before I start:\n• Role / level: ${A(p,'p1')}\n• Reports to / team: ${A(p,'p6')}\n• Location & schedule: ${loc}\n• Salary range: ${sal}\n• Must-haves: ${A(p,'p4')}\n• Nice-to-haves: ${A(p,'p5')}\n• Success in year one: ${A(p,'p7')}\n• Deal-breakers: ${A(p,'p8')}\n• Process & timeline: ${A(p,'p9')}\nAnything I've missed or got wrong? Once you confirm, I'll start the search.\n\n${me()}\nPro Talent Solutions`,send:['wa','mail']};
+   case'report':return{title:isC?'Full report for the coordinator':'Full report — paste as a Recruiterflow note',text:`${isC?'CLIENT INTAKE':(p.mode==='interview'?'INTERVIEW':'SCREENING')} — ${p.name}${p.company?' · '+p.company:''}\nDate: ${new Date().toLocaleDateString()}\nContact: ${[p.phone,p.email].filter(Boolean).join(' · ')}\nCame from: ${(p.from||[]).join(', ')}\n\n${qa(p)||'(no answers yet)'}`,send:['mail'],links:[['Open Recruiterflow',app('rf').url]]};
+   case'rf':return isC?{title:'Recruiterflow job fields',note:'Jobs → New Job. Copy each line into its field, then press Create / Update after each section.',text:`Job title: ${A(p,'p1')}\nClient: ${p.company}\nContact: ${p.name}\nLocation: ${loc}\nSalary range: ${sal}\nEngagement type: Contingent\nAccount manager: (leave empty)\nReport blurb: ${title}${loc?' in '+loc:''}${sal?', '+sal:''}. ${A(p,'p7')}\n\nJob description:\nAbout the role — ${A(p,'p7')}\nReports to — ${A(p,'p6')}\nMust-haves:\n${bullets(A(p,'p4')).map(x=>'- '+x).join('\n')}\nNice-to-haves:\n${bullets(A(p,'p5')).map(x=>'- '+x).join('\n')}\n\nKnock-out question ideas:\n${bullets(A(p,'p4')).slice(0,3).map(x=>'- Do you have: '+x+'?').join('\n')}\n\nJob notes: ${A(p,'p8')?'Deal-breakers: '+A(p,'p8')+'. ':''}${A(p,'p9')?'Process: '+A(p,'p9')+'. ':''}${A(p,'p11')?'Search radius: '+A(p,'p11')+'.':''}`,links:[['Open Recruiterflow',app('rf').url]]}
+     :{title:'Recruiterflow fields',note:'Fill these on their profile after the call.',text:`Expected Compensation: ${A(p,'i_exp','s_exp')}\nCandidate Source: ${(p.from||[]).join(', ')||A(p,'s_ad')}\nIndustry – New: ${A(p,'s_cur')}\nActively Looking: ${today()}\nStar Rating: _ / 5\nTag: ${p.mode==='interview'?'Candidate – Met':'Intake – Done'}${/lm|carpool|9.?-.?3/i.test(A(p,'s_sched','i_sched'))?'\nTag: LM Hours':''}${/flex/i.test(A(p,'s_sched','i_sched'))?'\nTag: Flexible Hours':''}`,links:[['Open Recruiterflow',app('rf').url]]};
+   case'posts':return{title:'Job posts',note:'WhatsApp: post in the Job Posts group (Tirzah shares it). LinkedIn: post from your profile.',text:`WHATSAPP\n*${title||'[Job title]'}* – *${loc||'[Location]'}* – *${sal||'[Salary]'}*\n\n${A(p,'p7')||'[2–3 line blurb]'}\n\nApply here: [job page link — job ⋯ menu → View job page]\n\n\nLINKEDIN\nWe're hiring: ${title||'[Job title]'} 📍 ${loc||'[Location]'}\n\n${A(p,'p7')||'[What makes this role great]'}\n\nWhat you bring:\n${bullets(A(p,'p4')).slice(0,5).map(x=>'✔ '+x).join('\n')}\n\nCompensation: ${sal||'[range]'}\nInterested, or know someone great? Message me or apply: [link]\n\n#hiring #${String(title||'jobs').replace(/[^A-Za-z]/g,'')}`,links:[['Open WhatsApp',app('wa').url],['Open LinkedIn',app('li').url]]};
+   case'team':return{title:'Tell the team',note:'Recruiterflow already emails the team when you open the job. Use this for the PTS Chat group.',text:`New job 🎉 *${title||'[Job title]'}* – ${loc||'[Location]'} – ${sal||'[Salary]'}\n${A(p,'p4')?'Looking for: '+bullets(A(p,'p4')).slice(0,3).join(', ')+'\n':''}Anyone come to mind? Send them my way!`,send:['wa']};
+   case'page':return{title:'Job page to show him',note:'Opens a clean page you can share on screen, or Print → Save as PDF and send.',text:null};
+   case'ai':return{title:'Make it nicer with AI',note:'Copy, then paste into ChatGPT or Claude.',text:`Using these intake notes, write: 1) a polished job description, 2) a WhatsApp blurb (bold title, location, salary), 3) a LinkedIn post, 4) short internal notes. Keep it warm and professional.\n\n${qa(p)}`,links:[['Open ChatGPT',app('gpt').url]]};
+   case'submit':return{title:'Submission email (handbook format)',text:`Subject: ${p.name} · [Client] · [Position] · Candidate\n\nHi [Hiring manager],\n\nI'd like to introduce ${p.name} for the [Position] role:\n• Currently: ${A(p,'s_cur','i_skills')}\n• Relevant skills: ${A(p,'i_skills','s_do')}\n• Location: ${A(p,'i_loc','s_loc')}\n• Salary range: ${A(p,'i_exp','s_exp')}\n• Why they're looking: ${A(p,'i_why','s_why')}\n• Biggest strength: ${A(p,'i_str')}\n\nResume attached. Please let me know if you'd like to meet the candidate.\n\n${me()}`,send:['mail']};
+   case'match':return{title:'Match to open jobs',note:'Paste into ChatGPT with the Recruiterflow plugin.',text:`@Recruiterflow Which of our open jobs could fit ${p.name}? They are based in ${A(p,'i_loc','s_loc')||'[location]'} (search within a 45-minute drive), expect ${A(p,'i_exp','s_exp')||'[salary]'}, and currently ${A(p,'s_do','i_skills')||'[background]'}. For each job, explain the fit, the gaps, and what I should ask them.`,links:[['Open ChatGPT',app('gpt').url]]};
+   case'pic':return{title:'Check their picture',note:'Opens a LinkedIn search for this person.',text:null,links:[['Search LinkedIn',`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent((p.name+' '+(p.company||'')).trim())}`]]};
+   case'rec':return{title:'Call recording & transcript',note:'Zoom calls are recorded and the notetaker puts notes into Recruiterflow. Phone calls are not recorded — fill the questions as you talk.',text:null,links:[['Zoom recordings','https://zoom.us/recording'],['Open Recruiterflow',app('rf').url]]};
+  }
+}
+function openJobPage(p){
+  const w=window.open('','_blank');if(!w)return;
+  const li=t=>bullets(t).map(x=>`<li>${esc(x)}</li>`).join('');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(A(p,'p1')||'Job')}</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Serif+Display&display=swap" rel="stylesheet"><style>body{font-family:'DM Sans',sans-serif;color:#211C17;background:#FCFAF7;margin:0}main{max-width:720px;margin:0 auto;padding:40px 20px}h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:2.2rem;margin:6px 0}.k{color:#C4724A;font-size:.8rem;letter-spacing:1px;text-transform:uppercase}.meta{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 24px}.meta span{background:#F4F0EA;border-radius:20px;padding:6px 12px;font-size:.9rem}h2{font-family:'DM Serif Display',serif;font-weight:400;margin:24px 0 8px}li{margin:4px 0}footer{margin-top:40px;color:#928B83;font-size:.85rem;border-top:1px solid #ECE7DE;padding-top:14px}button{margin-top:20px;background:#C4724A;color:#fff;border:0;border-radius:9px;padding:10px 16px;font:inherit;cursor:pointer}@media print{button{display:none}}</style></head><body><main>
+  <div class="k">${esc(p.company||'')}</div><h1>${esc(A(p,'p1')||'Position')}</h1>
+  <div class="meta">${[A(p,'p2'),A(p,'p3'),A(p,'p6')?'Reports to: '+A(p,'p6'):''].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+  ${A(p,'p7')?`<h2>The opportunity</h2><p>${esc(A(p,'p7'))}</p>`:''}
+  ${A(p,'p4')?`<h2>What you bring</h2><ul>${li(A(p,'p4'))}</ul>`:''}
+  ${A(p,'p5')?`<h2>Nice to have</h2><ul>${li(A(p,'p5'))}</ul>`:''}
+  ${A(p,'p10')?`<h2>The culture</h2><p>${esc(A(p,'p10'))}</p>`:''}
+  ${A(p,'p9')?`<h2>Process</h2><p>${esc(A(p,'p9'))}</p>`:''}
+  <footer>Prepared by ${esc(me())} · Pro Talent Solutions</footer><button onclick="print()">Print / Save as PDF</button></main></body></html>`);
+  w.document.close();
+}
+function addPerson(){
+  const paste=$('#aPaste').value;const ex=extract(paste);
+  const o={id:Math.random().toString(36).slice(2,10),type:addType,name:$('#aName').value.trim()||guessName(paste),phone:$('#aPhone').value.trim()||ex.phone,email:$('#aEmail').value.trim()||ex.email,company:$('#aCo').value.trim(),from:[$('#aFrom').value],status:STATUS[addType][0],ans:{},notes:paste.trim().slice(0,400),hits:1,mode:'screen',fu:today(),created:Date.now()};
+  if(!o.name&&!o.phone&&!o.email){alert('Add a name, phone or email');return}
+  if(!o.name)o.name=o.email||o.phone;
+  const m=st.people.map(x=>[x,sameAs(o,x)]).find(([x,s])=>s);
+  const add=()=>{st.people.unshift(o);st.adding=false;save();render()};
+  if(m){const[x,s]=m;ask({title:'Already in your chart?',text:`${o.name} looks like ${x.name} (${(x.from||[]).join(', ')}) — ${s==='sure'?'same phone or email':'similar name'}. Merge them into one row?`,yes:'Yes, merge',no:'No, add new',onYes:()=>{mergeInto(x,o);st.adding=false},onNo:add})}
+  else add();
+}
+
 function viewToday(){
+  if(openId)return viewSheet();
   if(st.day!==today()){st.day=today();st.done={};save()}
   const n=STEPS.filter(s=>st.done[s.id]).length;
   return `<div class="progress" style="border-color:var(--accent)"><div class="txt"><span>Daily run with Claude</span></div>
     <div class="tip" style="margin-bottom:10px">1. Open your work tabs in Chrome. 2. Open Claude in Chrome. 3. Paste this. Claude lists what came in, merges repeats, suggests actions, and does nothing until you confirm.</div>
     <button class="btn primary" data-a="copyRun">Copy my daily run</button></div>
+  ${viewChart()}
   <div class="progress"><div class="txt"><span>${n===STEPS.length?'All done for today 🎉':'Today\'s steps'}</span><span>${n} of ${STEPS.length}</span></div><div class="bar"><i style="width:${n/STEPS.length*100}%"></i></div></div>
   ${STEPS.map((s,i)=>{const d=st.done[s.id];return `<div class="step${d?' done':''}"><div class="num">${d?'✓':i+1}</div><div class="body"><div class="title">${esc(s.t)}</div><div class="tip">${esc(s.tip)}</div>${d?`<div class="when">Done at ${time(d)}</div>`:''}
     <div class="acts">${s.apps.map(k=>`<a class="btn small" href="${esc(app(k).url)}" target="_blank" rel="noopener">Open ${esc(app(k).name)}</a>`).join('')}${d?`<button class="btn small ghost" data-a="undo" data-v="${s.id}">Undo</button>`:`<button class="btn small primary" data-a="ask" data-v="${s.id}">Done</button>`}</div></div></div>`}).join('')}
@@ -182,6 +415,7 @@ function render(){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===tab));
   $('#date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
   $('#main').innerHTML=tab==='today'?viewToday():viewOnb();
+  document.querySelectorAll('textarea[data-q]').forEach(t=>{if(t.value){t.style.height='auto';t.style.height=t.scrollHeight+'px'}});
 }
 const RUN=`DAILY RUN — Pro Talent Solutions recruiting
 You are my recruiting assistant. Work only in my open tabs: Outlook, Recruiterflow, WhatsApp Web, Google Calendar, Zoom Scheduler, LinkedIn.
@@ -203,7 +437,13 @@ STEP 4 — WAIT. Do nothing yet. I will reply with edits, e.g. "3: tag Tirzah in
 STEP 5 — ACT ONLY AFTER I TYPE "CONFIRM". Then do the confirmed items one at a time and tell me when each is done. Ask me if anything is unclear.
 
 Rules: never send, disqualify or delete anything I have not confirmed. On LinkedIn, only read and draft — I will press send myself. Never copy candidate or client information anywhere outside these apps.`;
-function ask(title,text,fn){pending=fn;$('#mTitle').textContent=title;$('#mText').textContent=text;$('#modal').hidden=false}
+let pendingNo=null;
+function ask(title,text,fn){
+  let o=typeof title==='object'?title:{title,text,onYes:fn};
+  pending=o.onYes;pendingNo=o.onNo||null;$('#mTitle').textContent=o.title;$('#mText').textContent=o.text||'';
+  $('#mYesB').textContent=o.yes||'Yes, done ✓';$('#mNoB').textContent=o.no||'Not yet';$('#modal').hidden=false;
+}
+const TICK_Q={repEmail:'Did you reply to {n} by email today?',repWa:'Did you reply to {n} on WhatsApp today?',met:'Did you finish the call with {n}?',rf:'Did you update Recruiterflow for {n} (notes, tags, fields, stage)?'};
 
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,v=b.dataset.v;
@@ -214,10 +454,36 @@ document.addEventListener('click',e=>{
   else if(a==='undo'){delete st.done[v];save();render()}
   else if(a==='onbAsk'){ask('Did you finish this?',ONB[v][1],()=>{st.onb[v]=Date.now()})}
   else if(a==='onbUndo'){delete st.onb[v];save();render()}
-  else if(a==='mYes'){if(pending)pending();pending=null;$('#modal').hidden=true;save();render()}
-  else if(a==='mNo'){pending=null;$('#modal').hidden=true}
+  else if(a==='mYes'){if(pending)pending();pending=null;pendingNo=null;$('#modal').hidden=true;save();render()}
+  else if(a==='mNo'){const f=pendingNo;pending=null;pendingNo=null;$('#modal').hidden=true;if(f){f();save();render()}}
+  else if(a==='addToggle'){st.adding=!st.adding;render()}
+  else if(a==='addType'){addType=v;render()}
+  else if(a==='addSave'){addPerson()}
+  else if(a==='filter'){filter=v;render()}
+  else if(a==='tick'){const p=P(b.dataset.id),daily=v==='repEmail'||v==='repWa',on=daily?isToday(p[v]):!!p[v];
+    if(on)ask({title:'Undo this tick?',text:p.name,yes:'Yes, undo',no:'Keep it',onYes:()=>{p[v]=0}});
+    else ask({title:'Confirm',text:TICK_Q[v].replace('{n}',p.name),onYes:()=>{p[v]=Date.now()}})}
+  else if(a==='dupReview'){const d=dupPairs().find(x=>x.k===v);if(d)ask({title:'Same person?',text:`${d.a.name} (${(d.a.from||[]).join(', ')}) and ${d.b.name} (${(d.b.from||[]).join(', ')}) — ${d.s==='sure'?'same phone or email':'similar name'}.`,yes:'Yes, merge',no:'Different people',onYes:()=>{mergeInto(d.a,d.b);st.people=st.people.filter(x=>x.id!==d.b.id)},onNo:()=>{st.notDup.push(d.k)}})}
+  else if(a==='open'){openId=b.dataset.id;panel=null;render();window.scrollTo(0,0)}
+  else if(a==='close'){openId=null;panel=null;render()}
+  else if(a==='mode'){P(b.dataset.id).mode=v;panel=null;save();render()}
+  else if(a==='act'){const p=P(openId);panel=Object.assign({k:v},buildPanel(p,v));render()}
+  else if(a==='pCopy'){const t=$('#panelText').value;navigator.clipboard.writeText(t).then(()=>{b.textContent='Copied ✓'},()=>{})}
+  else if(a==='pSend'){const p=P(openId),t=$('#panelText').value;let u='';
+    if(v==='wa')u=p.phone?`https://wa.me/${waNum(p)}?text=${encodeURIComponent(t)}`:`https://wa.me/?text=${encodeURIComponent(t)}`;
+    if(v==='sms')u=`sms:${p.phone?'+'+waNum(p):''}?&body=${encodeURIComponent(t)}`;
+    if(v==='mail'){let subj='',body=t;const m=t.match(/^Subject:\s*(.*)\n+/);if(m){subj=m[1];body=t.slice(m[0].length)}u=`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(p.email||'')}&subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`}
+    window.open(u,'_blank','noopener')}
+  else if(a==='pPage'){openJobPage(P(openId))}
 });
-document.addEventListener('change',e=>{const el=e.target;if(el.dataset.app){const k=el.dataset.app;st.apps[k]=Object.assign({},st.apps[k]||{},{[el.dataset.f]:el.value.trim()||DEFAULT_APPS[k][el.dataset.f]});save();render();const d=document.querySelector('details.edit');if(d)d.open=true}});
+document.addEventListener('input',e=>{const el=e.target;
+  if(el.dataset.q){const p=P(el.dataset.id);if(p){p.ans[el.dataset.q]=el.value;save()}el.style.height='auto';el.style.height=el.scrollHeight+'px'}
+  if(el.id==='panelText'&&panel)panel.text=el.value;
+});
+document.addEventListener('change',e=>{const el=e.target;
+  if(el.dataset.pf){const p=P(el.dataset.id);if(!p)return;const f=el.dataset.pf,old=p[f];p[f]=el.value;
+    if(f==='status'&&el.value==='Not a fit'){ask({title:'Mark as not a fit?',text:'In Recruiterflow: disqualify from Applied (sends the automatic email). Already spoke to them? Move to Sourced first and send a personal note instead.',yes:'Yes, not a fit',no:'Cancel',onYes:()=>{},onNo:()=>{p.status=old}});return}
+    save();if(f!=='name'&&f!=='phone'&&f!=='email'&&f!=='company')render();return}if(el.dataset.app){const k=el.dataset.app;st.apps[k]=Object.assign({},st.apps[k]||{},{[el.dataset.f]:el.value.trim()||DEFAULT_APPS[k][el.dataset.f]});save();render();const d=document.querySelector('details.edit');if(d)d.open=true}});
 
 function start(){$('#lock').hidden=true;$('#app').hidden=false;render()}
 if(authed())start();else $('#pw').focus();
