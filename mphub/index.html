@@ -195,22 +195,41 @@ const FROM=['Recruiterflow','Email','WhatsApp','Indeed','LinkedIn','Referral','P
 const STATUS={cand:['New','Strong fit','Tag Tirzah','Back burner','Not a fit','Submitted','Hired'],client:['New lead','Intake done','Job open','On hold','Closed']};
 const CLIENT_Q=[
  ['h','About him'],
- ['c1','Company — what does it do? Size? Locations?'],
+ ['c1','Company — what does it do? Industry? Size? Locations?'],
+ ['c5','Company website · LinkedIn page · key leaders'],
  ['c2','His role — is he the decision maker? Who else is involved?'],
  ['c3','Worked with recruiters before? How did it go?'],
  ['c4','Best way and times to reach him'],
  ['h','About the position'],
- ['p1','Job title & level — new role or replacement? Why is it open?'],
- ['p2','Location · on-site / hybrid / remote · schedule'],
- ['p3','Salary range & benefits'],
- ['p4','Must-haves (experience, skills, certifications)'],
- ['p5','Nice-to-haves'],
- ['p6','Reports to · team size'],
+ ['p1','Job title & level'],
+ ['p12','His internal title, if different'],
+ ['p13','Why is it open — new role or replacement? What happened with the last person?'],
+ ['p2','Location · on-site / hybrid / remote · schedule · travel'],
+ ['p6','Reports to'],
+ ['p14','Direct reports · team size'],
+ ['p3','Salary range — how flexible?'],
+ ['p15','Bonus · commission · equity'],
+ ['p16','Benefits (only what he confirmed)'],
+ ['p17','Main responsibilities'],
+ ['p18','Immediate priorities — what must this person fix first?'],
  ['p7','What does success look like in year one?'],
+ ['p4','Must-haves (true requirements only)'],
+ ['p5','Nice-to-haves'],
+ ['p19','Backgrounds he would consider'],
+ ['p20','Backgrounds he would NOT consider'],
+ ['p21','Companies we may not recruit from'],
+ ['p10','Ideal personality · leadership style · culture'],
+ ['p22','Frum-environment or schedule considerations'],
+ ['p23','Selling points — why would a strong person take this?'],
+ ['p24','Known concerns'],
  ['p8','Deal-breakers'],
- ['p9','Interview process & timeline — who interviews, how soon?'],
- ['p10','Culture — who thrives there?'],
- ['p11','Commute radius to search']
+ ['p9','Interview process · decision-makers'],
+ ['p25','How urgent? Timeline?'],
+ ['p26','Confidentiality — can we name the company?'],
+ ['p11','Commute radius to search'],
+ ['h','After the call'],
+ ['p27','Recruiterflow application link'],
+ ['p28','Application email (if no link)']
 ];
 const SCREEN_Q=[
  ['h','Screening'],
@@ -228,7 +247,7 @@ const INTERVIEW_Q=[
  ['i_sched','Schedule needs (LM hours, flexible hours)'],['i_comm','Community & social fit (notes)'],['i_ref','References'],['i_qs','Their questions for me'],['i_gen','General thoughts']
 ];
 const ACTIONS={
- client:[['missed','“Missed you” message'],['text','Text him'],['incoming','Find his messages'],['summary','Role summary to send him'],['report','Full report (coordinator)'],['rf','Recruiterflow job fields'],['posts','Job posts (WhatsApp + LinkedIn)'],['team','Tell the team'],['page','Show him the job page'],['ai','Make it nicer with AI'],['pic','Check his picture'],['rec','Call recording & transcript']],
+ client:[['missed','“Missed you” message'],['text','Text him'],['incoming','Find his messages'],['summary','Role summary to send him'],['report','Full report (coordinator)'],['rf','Recruiterflow job fields'],['posts','Job posts (WhatsApp + LinkedIn)'],['team','Tell the team'],['page','Show him the job page'],['package','ChatGPT job package'],['pic','Check his picture'],['rec','Call recording & transcript']],
  cand:[['missed','“Missed you” message'],['luck','“Good luck” text'],['text','Text them'],['incoming','Find their messages'],['report','Full report (RF note)'],['submit','Submission email'],['rf','Recruiterflow fields'],['match','Match to open jobs'],['pic','Check their picture'],['rec','Call recording & transcript']]
 };
 
@@ -360,7 +379,7 @@ function buildPanel(p,k){
    case'posts':return{title:'Job posts',note:'WhatsApp: post in the Job Posts group (Tirzah shares it). LinkedIn: post from your profile.',text:`WHATSAPP\n*${title||'[Job title]'}* – *${loc||'[Location]'}* – *${sal||'[Salary]'}*\n\n${A(p,'p7')||'[2–3 line blurb]'}\n\nApply here: [job page link — job ⋯ menu → View job page]\n\n\nLINKEDIN\nWe're hiring: ${title||'[Job title]'} 📍 ${loc||'[Location]'}\n\n${A(p,'p7')||'[What makes this role great]'}\n\nWhat you bring:\n${bullets(A(p,'p4')).slice(0,5).map(x=>'✔ '+x).join('\n')}\n\nCompensation: ${sal||'[range]'}\nInterested, or know someone great? Message me or apply: [link]\n\n#hiring #${String(title||'jobs').replace(/[^A-Za-z]/g,'')}`,links:[['Open WhatsApp',app('wa').url],['Open LinkedIn',app('li').url]]};
    case'team':return{title:'Tell the team',note:'Recruiterflow already emails the team when you open the job. Use this for the PTS Chat group.',text:`New job 🎉 *${title||'[Job title]'}* – ${loc||'[Location]'} – ${sal||'[Salary]'}\n${A(p,'p4')?'Looking for: '+bullets(A(p,'p4')).slice(0,3).join(', ')+'\n':''}Anyone come to mind? Send them my way!`,send:['wa']};
    case'page':return{title:'Job page to show him',note:'Opens a clean page you can share on screen, or Print → Save as PDF and send.',text:null};
-   case'ai':return{title:'Make it nicer with AI',note:'Copy, then paste into ChatGPT or Claude.',text:`Using these intake notes, write: 1) a polished job description, 2) a WhatsApp blurb (bold title, location, salary), 3) a LinkedIn post, 4) short internal notes. Keep it warm and professional.\n\n${qa(p)}`,links:[['Open ChatGPT',app('gpt').url]]};
+   case'package':{const f=(l,v)=>`${l}: ${v||''}`;return{title:'ChatGPT job package',note:'Paste into your Job Package ChatGPT conversation (the one with the standing instructions). Also paste or attach the intake transcript and any old job description. Blank lines are fine — ChatGPT will flag what is missing.',text:['Create the complete Pro Talent Solutions job package using our standing instructions.','',f('Client',p.company),f('Industry',A(p,'c1')),f('Client website / LinkedIn',A(p,'c5')),f('Role',A(p,'p1')),f("Client's internal title, if different",A(p,'p12')),f('Reason the position is open',A(p,'p13')),f('Location',A(p,'p2')),f('Schedule',A(p,'p2')),f('Reports to',A(p,'p6')),f('Direct reports',A(p,'p14')),f('Compensation',A(p,'p3')),f('Bonus/commission/equity',A(p,'p15')),f('Benefits',A(p,'p16')),f('Required experience',A(p,'p4')),f('Preferred experience',A(p,'p5')),f('Main responsibilities',A(p,'p17')),f('Immediate priorities',A(p,'p18')),f('What success looks like',A(p,'p7')),f('Ideal personality/leadership style',A(p,'p10')),f('Company/team culture',A(p,'p10')),f('Frum-environment or schedule considerations',A(p,'p22')),f('Selling points',A(p,'p23')),f('Known concerns',[A(p,'p24'),A(p,'p8')?'Deal-breakers: '+A(p,'p8'):''].filter(Boolean).join(' · ')),f('Backgrounds the client will consider',A(p,'p19')),f('Backgrounds the client will not consider',A(p,'p20')),f('Companies we may not recruit from',A(p,'p21')),f('Interview process',A(p,'p9')),f('Search urgency',A(p,'p25')),f('Confidentiality instructions',A(p,'p26')),f('Recruiter assigned',me()),f('Recruiterflow link',A(p,'p27')),f('Application email',A(p,'p28')),f('Additional notes',[A(p,'c2')?'Hiring contact: '+p.name+' — '+A(p,'c2'):'',A(p,'p11')?'Search radius: '+A(p,'p11'):''].filter(Boolean).join(' · ')),'','Attached or pasted below:','• Intake transcript','• Existing job description','• Client notes','','Read the entire transcript carefully. Distinguish confirmed facts from assumptions, recruiter suggestions and ideas the client did not actually approve. Do not treat every background discussed as a firm requirement. Review everything carefully, identify contradictions or missing information and then create the full package. Do not invent anything.'].join('\n'),links:[['Open ChatGPT',app('gpt').url]]}}
    case'submit':return{title:'Submission email (handbook format)',text:`Subject: ${p.name} · [Client] · [Position] · Candidate\n\nHi [Hiring manager],\n\nI'd like to introduce ${p.name} for the [Position] role:\n• Currently: ${A(p,'s_cur','i_skills')}\n• Relevant skills: ${A(p,'i_skills','s_do')}\n• Location: ${A(p,'i_loc','s_loc')}\n• Salary range: ${A(p,'i_exp','s_exp')}\n• Why they're looking: ${A(p,'i_why','s_why')}\n• Biggest strength: ${A(p,'i_str')}\n\nResume attached. Please let me know if you'd like to meet the candidate.\n\n${me()}`,send:['mail']};
    case'match':return{title:'Match to open jobs',note:'Paste into ChatGPT with the Recruiterflow plugin.',text:`@Recruiterflow Which of our open jobs could fit ${p.name}? They are based in ${A(p,'i_loc','s_loc')||'[location]'} (search within a 45-minute drive), expect ${A(p,'i_exp','s_exp')||'[salary]'}, and currently ${A(p,'s_do','i_skills')||'[background]'}. For each job, explain the fit, the gaps, and what I should ask them.`,links:[['Open ChatGPT',app('gpt').url]]};
    case'pic':return{title:'Check their picture',note:'Opens a LinkedIn search for this person.',text:null,links:[['Search LinkedIn',`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent((p.name+' '+(p.company||'')).trim())}`]]};
